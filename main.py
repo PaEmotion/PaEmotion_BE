@@ -1,14 +1,11 @@
-from db.session import SessionLocal
-from db.base import Base
+# main.py
+from fastapi import FastAPI
+from routers import user 
 
-# 예시: raw SQL
-def test_select():
-    session = SessionLocal()
-    try:
-        result = session.execute("SELECT * FROM user")  # 테이블명 맞게 바꿔
-        for row in result:
-            print(row)
-    finally:
-        session.close()
+app = FastAPI()
 
-test_select()
+app.include_router(user.router)
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI!"}
