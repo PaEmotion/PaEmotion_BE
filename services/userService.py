@@ -1,8 +1,9 @@
-from schemas.user import UserCreate
+from schemas.user import UserCreate, UserLogin
 from models.user import User
 from db.session import get_db
 from sqlalchemy.orm import Session
 import hashlib
+from auth.token import create_access_token
 
 class UserService:
     @staticmethod
@@ -32,4 +33,28 @@ class UserService:
             "email": new_user.email,
             "name": new_user.name,
             "nickname": new_user.nickname
+        }
+
+    @staticmethod
+    async def login(user: UserLogin, db:Session) -> dict:
+        # 존재하는 이메일인지 확인
+        existing_user = db.query(User).filter(User.email == user.email).first()
+        if not existing_user:
+            raise ValueError("존재하지 않는 회원입니다.")
+        
+        # 받은 비밀번호 해싱
+        hashed_input_pw = hashlib.sha256(user.password.encode()).hexdigest()
+
+        # 원래의 비밀번호와 일치하는지 검증
+        if existing_user.password != hashed_input_pw:
+            raise ValueError("비밀번호가 일치하지 않습니다.")
+        
+        access_token = create_access_token(data={"sub": str(existing_user.userId)})
+        
+        return {
+            "email": existing_user.email,
+            "name" : existing_user.name,
+            "nickname" : existing_user.nickname,
+            "access_token": access_token,
+            "token_type": "bearer"
         }

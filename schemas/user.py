@@ -29,3 +29,7 @@ class UserCreate(BaseModel):
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
             raise ValueError('특수문자가 최소 1개 포함되어야 합니다.')
         return v
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
