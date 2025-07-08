@@ -1,10 +1,14 @@
 # main.py
-from fastapi import FastAPI
-from routers import user 
 
+from dotenv import load_dotenv
+load_dotenv()
+from fastapi import FastAPI
+from routers.user.user import router as user_router 
+from routers.user.email import router as email_router
 app = FastAPI()
 
-app.include_router(user.router)
+app.include_router(user_router)
+app.include_router(email_router)
 
 @app.get("/")
 def read_root():

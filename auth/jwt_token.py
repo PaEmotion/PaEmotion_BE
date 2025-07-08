@@ -21,24 +21,25 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def verify_token(token: str):
+def verify_token(token: str) -> int | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
             return None
-        return user_id
+        return int(user_id)
     except JWTError:
         return None
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login") 
+
 def get_current_user (token:str = Depends(oauth2_scheme), db: Session =Depends(get_db)):
     user_id = verify_token(token)
     if user_id is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="유효하지 않은 토큰입니다.")
     
 
-    user = db.query(User).filter(User.userId==int(user_id)).first()
+    user = db.query(User).filter(User.userId==user_id).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="존재하지 않는 유저입니다.")
     

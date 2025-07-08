@@ -2,8 +2,11 @@ from schemas.user import UserCreate, UserLogin
 from models.user import User
 from db.session import get_db
 from sqlalchemy.orm import Session
-import hashlib
-from auth.token import create_access_token
+import hashlib, redis
+from auth.jwt_token import create_access_token
+
+redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+
 
 class UserService:
     @staticmethod
@@ -13,6 +16,10 @@ class UserService:
         if existing_user:
             raise ValueError("이미 존재하는 이메일입니다.")
         
+        is_verified = redis_client.get(f"verified:{user.email}")
+        if not is_verified:
+            raise ValueError("이메일 인증을 먼저 완료해 주세요.")
+
         # 비밀번호 해싱
         hashed_password = hashlib.sha256(user.password.encode()).hexdigest()
 
@@ -34,7 +41,7 @@ class UserService:
             "name": new_user.name,
             "nickname": new_user.nickname
         }
-
+    
     @staticmethod
     async def login(user: UserLogin, db:Session) -> dict:
         # 존재하는 이메일인지 확인
