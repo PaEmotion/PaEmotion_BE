@@ -25,7 +25,6 @@ def records_readbydate(db: Session, user_id: int, spend_date: date): #일건
 def records_readbyspendid(db: Session, user_id: int, spend_id: int): #단건
     return db.query(Record).filter_by(userId=user_id, spendId=spend_id).first()
 
-
 # 소비내역 수정 함수
 def records_edit(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record | None | str:
     target_record = db.query(Record).filter(Record.spendId == spend_id).first()
