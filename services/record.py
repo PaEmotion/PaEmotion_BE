@@ -1,45 +1,55 @@
 from sqlalchemy.orm import Session
 from models.record import Record
-from schemas.record import RecordsCreate, RecordsDelete, RecordsRead, RecordsEdit
-from datetime import datetime, date
-from sqlalchemy import Date
+from schemas.record import RecordsCreate, RecordsEdit
+from datetime import date
+from sqlalchemy import func
 
-# 생성된 새로운 소비 내역을 DB에 저장하는 함수
-def records_create(db: Session, record_data: RecordsCreate) -> Record:
-    new_record = Record(**record_data.dict(by_alias=True))
+# 소비내역 생성 함수
+def records_create(db: Session, record_data: RecordsCreate) -> Record: 
+    new_record = Record(**record_data.model_dump())
     db.add(new_record)
     db.commit()
     db.refresh(new_record)
     return new_record
 
+# 소비내역 조회 함수
+def records_readbydate(db: Session, user_id: int, spend_date: date): #일건
+    return (
+        db.query(Record)
+        .filter(
+            Record.userId == user_id,
+            func.date(Record.spendDate) == spend_date
+        )
+        .all()
+    )
+def records_readbyspendid(db: Session, user_id: int, spend_id: int): #단건
+    return db.query(Record).filter_by(userId=user_id, spendId=spend_id).first()
+
+
 # 소비내역 수정 함수
-def records_readbydate(db: Session, user_id: int, target_date: date, spend_id: int):
-    return db.query(Record).filter(
-        Record.userId == user_id,
-        Record.spendDate.cast(Date) == target_date,
-        Record.spendId == spend_id
-    ).first()
+def records_edit(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record | None | str:
+    target_record = db.query(Record).filter(Record.spendId == spend_id).first()
+    if not target_record: return None
 
-# DB에서 소비내역을 수정하는 함수
-def records_edit(db: Session, spendId: int, record_update: RecordsEdit) -> Record | None:
-    record = db.query(Record).filter(Record.spendId == spendId).first()
-    if not record:
-        return None
+    new_edited_data = edited_data.model_dump(exclude_unset=True)
 
-    update_data = record_update.model_dump(exclude_unset=True, by_alias=True)
-
-    for key, value in update_data.items():
-        setattr(record, key, value)
+    is_changed = False
+    for key, new_value in new_edited_data.items():
+        old_value = getattr(target_record, key, None)
+        if new_value != old_value:
+            setattr(target_record, key, new_value)
+            is_changed = True
+    if not is_changed: return "not_change"
 
     db.commit()
-    db.refresh(record)
-    return record
+    db.refresh(target_record)
+    return target_record
 
-# DB에서 소비내역을 삭제하는 함수
-def records_delete(db: Session, spendId: int) -> bool:
-    record = db.query(Record).filter(Record.spendId == spendId).first()
-    if not record:
+# 소비내역 삭제 함수
+def records_delete(db: Session, spend_id: int) -> bool:
+    target_record = db.query(Record).filter(Record.spendId == spend_id).first()
+    if not target_record:
         return False
-    db.delete(record)
+    db.delete(target_record)
     db.commit()
     return True
