@@ -37,19 +37,20 @@ class ReportService:
             raise ValueError("리포트를 찾을 수 없습니다.")
         return report
     
-    # 리포트 리스트 조회 함수 (유저, 기간별로)
+    # 리포트 리스트 조회 함수 (유저, 기간 또는 날짜별로)
     @staticmethod
-    def report_readbylist(db: Session, user_id: Optional[int] = None, start_date: Optional[date] = None, 
-                          end_date: Optional[date] = None) -> List[UserReport]:
-        query = db.query(UserReport)
+    def report_readbylist(
+        db: Session,
+        user_id: int,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
+        report_date: Optional[date] = None
+    ) -> List[UserReport]:
+        query = db.query(UserReport).filter(UserReport.userId == user_id)
 
-        if user_id:
-            query = query.filter(UserReport.userId == user_id)
-        if start_date and end_date:
+        if report_date:
+            query = query.filter(UserReport.reportDate == report_date)
+        elif start_date and end_date:
             query = query.filter(UserReport.reportDate.between(start_date, end_date))
-        elif start_date:
-            query = query.filter(UserReport.reportDate >= start_date)
-        elif end_date:
-            query = query.filter(UserReport.reportDate <= end_date)
 
         return query.order_by(UserReport.reportDate.desc()).all()
