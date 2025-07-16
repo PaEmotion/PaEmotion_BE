@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from datetime import date
 
-from schemas.record import RecordsCreate, RecordsRead, RecordsEdit
 from db.session import get_db
+from schemas.record import RecordsCreate, RecordsRead, RecordsEdit
 from services import record as record_service
 
 router = APIRouter(prefix="/records", tags=["records"])
@@ -16,8 +16,8 @@ def records_create(record: RecordsCreate, db: Session = Depends(get_db)):
     return new_record
 
 # 소비내역 조회 API
-@router.get("/readbydate/{userId}", response_model=List[RecordsRead])  # 일건
-def readbydate(
+@router.get("/readbydate/{userId}", response_model=List[RecordsRead]) # 일건
+def records_readbydate(
     userId: int = Path(...),
     spendDate: date = Query(...),
     db: Session = Depends(get_db)
@@ -26,8 +26,8 @@ def readbydate(
     if not result:
         raise HTTPException(status_code=404, detail="소비내역을 찾을 수 없습니다.")
     return result
-@router.get("/readbyspendid/{userId}/{spendId}", response_model=RecordsRead)  # 단건
-def readbyspendid(
+@router.get("/readbyspendid/{userId}/{spendId}", response_model=RecordsRead) # 단건
+def reocrds_readbyspendid(
     userId: int = Path(...),
     spendId: int = Path(...),
     db: Session = Depends(get_db)

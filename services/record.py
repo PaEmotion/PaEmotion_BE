@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
-from models.record import Record
-from schemas.record import RecordsCreate, RecordsEdit
 from datetime import date
 from sqlalchemy import func
+
+from models.record import Record
+from schemas.record import RecordsCreate, RecordsEdit
+
 
 # 소비내역 생성 함수
 def records_create(db: Session, record_data: RecordsCreate) -> Record: 

@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 
 # DB 접속 URL 예시 (본인 환경에 맞게 수정)
-DATABASE_URL = "mysql+pymysql://root:root@localhost:3306/paemotiondb"
+DATABASE_URL = "mysql+pymysql://root:root@localhost:3306/PaEmotionDB"
 
 engine = create_engine(DATABASE_URL, echo=True)  # echo=True 하면 쿼리 로그 확인 가능
 Session = sessionmaker(bind=engine)

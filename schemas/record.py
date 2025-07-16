@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
+
 # 소비내역 생성 스키마
 class RecordsCreate(BaseModel):
     userId: int
