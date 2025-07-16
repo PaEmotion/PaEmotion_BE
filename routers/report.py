@@ -45,9 +45,9 @@ def report_read(
 # 리포트 목록 조회 API (유저아이디, 기간을 쿼리파라미터로 받음)
 @router.get("/report/readbylist", response_model=List[ReportRead])
 def report_readbylist(
-    userId: Optional[int] = Query(None, description="유저 ID"),
-    startDate: Optional[date] = Query(None, description="조회 시작일"),
-    endDate: Optional[date] = Query(None, description="조회 종료일"),
+    userId: Optional[int] = Query(None),
+    startDate: Optional[date] = Query(None),
+    endDate: Optional[date] = Query(None),
     db: Session = Depends(get_db)
 ):
     return ReportService.report_readbylist(
