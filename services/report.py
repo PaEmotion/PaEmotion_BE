@@ -39,15 +39,13 @@ class ReportService:
     
     # 리포트 리스트 조회 함수 (유저, 기간 또는 날짜별로)
     @staticmethod
-    def report_readbylist(
-        db: Session,
-        user_id: int,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
-        report_date: Optional[date] = None
-    ) -> List[UserReport]:
-        query = db.query(UserReport).filter(UserReport.userId == user_id)
+    def report_readbylist(db: Session, user_id: Optional[int] = None, report_date: Optional[date] = None,
+                          start_date: Optional[date] = None, end_date: Optional[date] = None) -> List[UserReport]:
+        query = db.query(UserReport)
 
+        # 조건별 필터링
+        if user_id:
+            query = query.filter(UserReport.userId == user_id)
         if report_date:
             query = query.filter(UserReport.reportDate == report_date)
         elif start_date and end_date:
