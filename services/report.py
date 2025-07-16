@@ -4,8 +4,8 @@ from schemas.report import ReportTypeEnum
 from datetime import date
 from typing import Optional, List
 
-# 리포트 저장 함수
 class ReportService:
+    # 리포트 저장 함수
     @staticmethod
     def report_create(db: Session, user_id: int, report_date: date, 
                       report_type: ReportTypeEnum, report_text: str) -> UserReport:
