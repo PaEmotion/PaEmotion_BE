@@ -18,5 +18,4 @@ class ReportRead(ReportCreate):
     reportId: int
     userId: int
 
-    class Config:
-        orm_mode = True
+    class Config: from_attributes = True

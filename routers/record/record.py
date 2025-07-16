@@ -5,7 +5,7 @@ from datetime import date
 
 from db.session import get_db
 from schemas.record import RecordsCreate, RecordsRead, RecordsEdit
-from services import record as record_service
+from services.record import record as record_service
 
 router = APIRouter(prefix="/records", tags=["records"])
 
