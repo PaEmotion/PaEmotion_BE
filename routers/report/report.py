@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import date
 
 from schemas.report import ReportCreate, ReportRead
-from services.report import ReportService
+from services.report.report import ReportService
 from db.session import get_db
 
 router = APIRouter(prefix="/report", tags=["report"])
@@ -41,7 +41,7 @@ def report_read(
         raise HTTPException(status_code=404, detail=str(e))
 
 # 리포트 목록 조회 API (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
-@router.get("/readbylist", response_model=List[ReportRead])
+@router.get("/read", response_model=List[ReportRead])
 def report_readbylist(
     userId: Optional[int] = Query(None),
     reportDate: Optional[date] = Query(None),

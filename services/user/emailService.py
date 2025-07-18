@@ -1,9 +1,9 @@
 from models.user import User
 from auth.email_token import create_email_token
-import smtplib
 from sqlalchemy.orm import Session
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import smtplib
 import os, redis
 
 from dotenv import load_dotenv

@@ -5,7 +5,7 @@ from datetime import date
 
 from db.session import get_db
 from schemas.record import RecordsCreate, RecordsRead, RecordsEdit
-from services.record import record as record_service
+from services import record as record_service
 
 router = APIRouter(prefix="/records", tags=["records"])
 
@@ -16,7 +16,7 @@ def records_create(record: RecordsCreate, db: Session = Depends(get_db)):
     return new_record
 
 # 소비내역 조회 API
-@router.get("/readbydate/{userId}", response_model=List[RecordsRead]) # 일건
+@router.get("/read/{userId}", response_model=List[RecordsRead]) # 일건
 def records_readbydate(
     userId: int = Path(...),
     spendDate: date = Query(...),
@@ -26,13 +26,13 @@ def records_readbydate(
     if not result:
         raise HTTPException(status_code=404, detail="소비내역을 찾을 수 없습니다.")
     return result
-@router.get("/readbyspendid/{userId}/{spendId}", response_model=RecordsRead) # 단건
-def reocrds_readbyspendid(
+@router.get("/read/{userId}/{spendId}", response_model=RecordsRead) # 단건
+def records_read(
     userId: int = Path(...),
     spendId: int = Path(...),
     db: Session = Depends(get_db)
 ):
-    result = record_service.records_readbyspendid(db=db, user_id=userId, spend_id=spendId)
+    result = record_service.records_read(db=db, user_id=userId, spend_id=spendId)
     if not result:
         raise HTTPException(status_code=404, detail="소비내역을 찾을 수 없습니다.")
     return result

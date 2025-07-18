@@ -2,8 +2,8 @@ from schemas.user import UserCreate, UserLogin
 from models.user import User
 from db.session import get_db
 from sqlalchemy.orm import Session
-import hashlib, redis
 from auth.jwt_token import create_access_token
+import hashlib, redis
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 

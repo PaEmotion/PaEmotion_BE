@@ -1,2 +1,3 @@
-from .record import ml_record
-from .record import record
+from . import record                   
+from .report import report            
+from .report import data              
