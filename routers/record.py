@@ -16,17 +16,17 @@ def records_create(record: RecordsCreate, db: Session = Depends(get_db)):
     return new_record
 
 # 소비내역 조회 API
-@router.get("/read/{userId}", response_model=List[RecordsRead]) # 일건
+@router.get("/{userId}", response_model=List[RecordsRead]) # 일건
 def records_readbydate(
     userId: int = Path(...),
-    spendDate: date = Query(...),
-    db: Session = Depends(get_db)
+    spendDate: date = Query(...), # 날짜는 쿼리파람으로
+    db: Session = Depends(get_db) 
 ):
     result = record_service.records_readbydate(db=db, user_id=userId, spend_date=spendDate)
     if not result:
         raise HTTPException(status_code=404, detail="소비내역을 찾을 수 없습니다.")
     return result
-@router.get("/read/{userId}/{spendId}", response_model=RecordsRead) # 단건
+@router.get("/{userId}/{spendId}", response_model=RecordsRead) # 단건
 def records_read(
     userId: int = Path(...),
     spendId: int = Path(...),

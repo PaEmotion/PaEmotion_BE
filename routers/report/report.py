@@ -7,7 +7,7 @@ from schemas.report import ReportCreate, ReportRead
 from services.report.report import ReportService
 from db.session import get_db
 
-router = APIRouter(prefix="/report", tags=["report"])
+router = APIRouter(prefix="/reports", tags=["reports"])
 
 # 리포트 저장 API
 @router.post("/create/{userId}", response_model=ReportRead, status_code=201)
@@ -29,7 +29,7 @@ def report_create(
         raise HTTPException(status_code=400, detail=str(e))
 
 # 리포트 단건 조회 API (URL에서 리포트 아이디 받음)
-@router.get("/read/{reportId}", response_model=ReportRead)
+@router.get("/{reportId}", response_model=ReportRead)
 def report_read(
     reportId: int = Path(...),
     db: Session = Depends(get_db)
@@ -41,7 +41,7 @@ def report_read(
         raise HTTPException(status_code=404, detail=str(e))
 
 # 리포트 목록 조회 API (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
-@router.get("/read", response_model=List[ReportRead])
+@router.get("", response_model=List[ReportRead])
 def report_readbylist(
     userId: Optional[int] = Query(None),
     reportDate: Optional[date] = Query(None),

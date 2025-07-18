@@ -14,7 +14,7 @@ router = APIRouter(prefix="/data", tags=["data"])
 유저아이디만 URL로 받음 -> 유저별 소비내역 조회
 유저아이디 URL로 받고 쿼리파라미터로 날짜 받음 -> 유저별로 날짜별 소비내역 조회
 """
-@router.get("/read/{userId}", response_model=List[RecordsRead])
+@router.get("/{userId}", response_model=List[RecordsRead])
 def data_read(
     userId: int = Path(...),
     spendDate: Optional[date] = Query(None),
