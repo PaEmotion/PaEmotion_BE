@@ -11,7 +11,7 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 
 # 리포트 저장 API
 @router.post("/create/{userId}", response_model=ReportRead, status_code=201)
-def report_create(
+def reports_create(
     userId: int = Path(...),
     report_data: ReportCreate = Body(...),
     db: Session = Depends(get_db)
@@ -30,19 +30,19 @@ def report_create(
 
 # 리포트 단건 조회 API (URL에서 리포트 아이디 받음)
 @router.get("/{reportId}", response_model=ReportRead)
-def report_read(
+def reports_read(
     reportId: int = Path(...),
     db: Session = Depends(get_db)
 ):
     try:
-        report = ReportService.report_read(db=db, report_id=reportId)
+        report = ReportService.reports_read(db=db, report_id=reportId)
         return report
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 # 리포트 목록 조회 API (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
 @router.get("", response_model=List[ReportRead])
-def report_readbylist(
+def reports_readbylist(
     userId: Optional[int] = Query(None),
     reportDate: Optional[date] = Query(None),
     startDate: Optional[date] = Query(None),
@@ -56,7 +56,7 @@ def report_readbylist(
     if (startDate and not endDate) or (endDate and not startDate):
         raise HTTPException(status_code=400, detail="startDate와 endDate는 함께 입력해야 합니다.")
 
-    return ReportService.report_readbylist(
+    return ReportService.reports_readbylist(
         db=db,
         user_id=userId,
         report_date=reportDate,

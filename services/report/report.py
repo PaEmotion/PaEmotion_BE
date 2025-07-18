@@ -7,7 +7,7 @@ from typing import Optional, List
 class ReportService:
     # 리포트 저장 함수
     @staticmethod
-    def report_create(db: Session, user_id: int, report_date: date, 
+    def reports_create(db: Session, user_id: int, report_date: date, 
                       report_type: ReportTypeEnum, report_text: str) -> UserReport:
         existing = db.query(UserReport).filter_by(
             userId=user_id,
@@ -31,7 +31,7 @@ class ReportService:
 
     # 리포트 단건 조회 함수 (리포트 아이디로)
     @staticmethod
-    def report_read(db: Session, report_id: int) -> UserReport:
+    def reports_read(db: Session, report_id: int) -> UserReport:
         report = db.query(UserReport).filter_by(reportId=report_id).first()
         if not report:
             raise ValueError("리포트를 찾을 수 없습니다.")
@@ -39,7 +39,7 @@ class ReportService:
     
     # 리포트 리스트 조회 함수 (유저, 기간 또는 날짜별로)
     @staticmethod
-    def report_readbylist(db: Session, user_id: Optional[int] = None, report_date: Optional[date] = None,
+    def reports_readbylist(db: Session, user_id: Optional[int] = None, report_date: Optional[date] = None,
                           start_date: Optional[date] = None, end_date: Optional[date] = None) -> List[UserReport]:
         query = db.query(UserReport)
 
