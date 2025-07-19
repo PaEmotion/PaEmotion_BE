@@ -3,6 +3,10 @@ from .record import Record
 from .category import EmotionCategory, SpendCategory
 from .budget import Budget
 from .report import AdminDailyReport, AdminMonthlyReport, AdminWeeklyReport, UserReport
+from .report import UserReport, ReportTypeEnum  
+
+# 필요한 다른 모델들도 여기에 import 추가
+
 
 __all__ = [
     "User",
