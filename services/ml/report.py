@@ -2,7 +2,7 @@ from ai.utils import make_sliding_window_multi
 from services.report.data import data_read
 from ai import budgetTraining, budgetPrediction
 
-def train_and_prediction (userId:int):
+def training_and_prediction (userId:int):
     # 1. 데이터 조회하기
     df = data_read(userId)
 
