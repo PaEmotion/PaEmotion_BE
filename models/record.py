@@ -5,7 +5,7 @@ from db.base import Base
 class Record(Base):
     __tablename__ = 'record'
 
-    spendId = Column('spendId', BigInteger, primary_key=True, nullable=False)
+    spendId = Column('spendId', BigInteger, primary_key=True, nullable=False, autoincrement=True)
     userId = Column('userId', BigInteger, ForeignKey('user.userId'), nullable=False)
     emotionCategoryId = Column('emotionCategoryId', BigInteger, ForeignKey('emotion_category.emotionCategoryId'), nullable=False)
     spendCategoryId = Column('spendCategoryId', BigInteger, ForeignKey('spend_category.spendCategoryId'), nullable=False)
