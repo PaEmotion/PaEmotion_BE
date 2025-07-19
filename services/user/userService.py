@@ -59,6 +59,7 @@ class UserService:
         access_token = create_access_token(data={"sub": str(existing_user.userId)})
         
         return {
+            "userId": existing_user.userId,
             "email": existing_user.email,
             "name" : existing_user.name,
             "nickname" : existing_user.nickname,
