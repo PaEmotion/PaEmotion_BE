@@ -31,7 +31,7 @@ def budgetPrediction(model_path='rf_model.pkl', test_csv_path='../data/test.csv'
     return preds, y_test, mae
 
 ''' # 실제 배포용 
-def predict_spending(test_df: pd.DataFrame, model_path='rf_model.pkl') -> np.ndarray:
+def budgetPrediction(test_df: pd.DataFrame, model_path='rf_model.pkl') -> np.ndarray:
     test_df['spendDate'] = pd.to_datetime(test_df['spendDate'])
     test_df['week'] = test_df['spendDate'].dt.isocalendar().week
     test_df['avg_spend'] = test_df.groupby('userId')['spendCost'].transform('mean')
