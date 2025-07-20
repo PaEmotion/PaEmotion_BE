@@ -1,7 +1,7 @@
 from .user import User
 from .record import Record
 from .category import EmotionCategory, SpendCategory
-from .budget import Budget
+from .budget import TotalBudget, CategoryBudget
 from .report import AdminDailyReport, AdminMonthlyReport, AdminWeeklyReport, UserReport
 from .report import UserReport, ReportTypeEnum  
 
@@ -13,7 +13,8 @@ __all__ = [
     "Record",
     "EmotionCategory",
     "SpendCategory",
-    "Budget",
+    "TotalBudget",
+    "CategoryBudget",
     "AdminDailyReport",
     "AdminMonthlyReport",
     "AdminWeeklyReport",
