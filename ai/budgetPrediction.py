@@ -3,27 +3,46 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.metrics import mean_absolute_error
-from utils import make_sliding_window_multi
+from ai.utils import full_preprocess
 
-# 1. 테스트 데이터 로드
-df = pd.read_csv('../data/test.csv')
-df['spendDate'] = pd.to_datetime(df['spendDate'])
-df['week'] = df['spendDate'].dt.isocalendar().week
-df['avg_spend'] = df.groupby('userId')['spendCost'].transform('mean')
+def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_window=3):
 
-# 2. 주별 집계
-weekly = df.groupby(['userId', 'week']).agg({
-    'spendCost': 'sum',
-    'avg_spend': 'mean'
-}).reset_index()
+    if test_df is None:
+        print("⚠️ 예측할 충분한 데이터가 없습니다. 빈 리스트 반환합니다.")
+        return []
 
-# 3. 슬라이딩 윈도우
-X_test, y_test = make_sliding_window_multi(weekly, window=8)
+    X_test, y_test = full_preprocess(test_df, window=window, cat_window=cat_window)
 
-# 4. 모델 불러오기 & 예측
-model = joblib.load('rf_model.pkl')
-preds = model.predict(X_test)
+    print(f"DEBUG: X_test 길이 = {len(X_test)}, y_test 길이 = {len(y_test)}")
 
-# 5. 평가
-mae = mean_absolute_error(y_test, preds)
-print(f"✅ 테스트 MAE: {mae:,.0f}원")
+    if len(X_test) == 0:
+        print("⚠️ 예측할 충분한 데이터가 없습니다. 조금 더 나중에 시도하십시오.")
+        return []
+    
+    model = joblib.load(model_path)
+    preds = model.predict(X_test)
+
+    mae = mean_absolute_error(y_test, preds)
+    print(f"✅ 테스트 MAE: {mae:,.0f}원")
+
+    return preds
+
+
+''' # 실제 배포용 
+def budget_predict(test_df: pd.DataFrame, model_path='ai/rf_model.pkl') -> np.ndarray:
+    test_df['spendDate'] = pd.to_datetime(test_df['spendDate'])
+    test_df['week'] = test_df['spendDate'].dt.isocalendar().week
+    test_df['avg_spend'] = test_df.groupby('userId')['spendCost'].transform('mean')
+
+    weekly = test_df.groupby(['userId', 'week']).agg({
+        'spendCost': 'sum',
+        'avg_spend': 'mean'
+    }).reset_index()
+
+    X_test, _ = make_sliding_window_multi(weekly, window=8)
+
+    model = joblib.load(model_path)
+    preds = model.predict(X_test)
+    return preds
+
+'''
