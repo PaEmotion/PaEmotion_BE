@@ -19,4 +19,4 @@ class User(Base):
     weeklyReports = relationship("AdminWeeklyReport", back_populates="user")
     adminDailyReports = relationship("AdminDailyReport", back_populates="user")
     userReports = relationship("UserReport", back_populates="user")
-    budgets = relationship("Budget", back_populates="user")
+    total_budgets = relationship("TotalBudget", back_populates="user")
