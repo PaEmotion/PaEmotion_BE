@@ -21,7 +21,9 @@ def data_read(db: Session, user_id: int, spend_date: Optional[str] = None) -> pd
     data = [{
         'userId': r.userId,
         'spendCost': r.spendCost,
-        'spendDate': r.spendDate
+        'spendDate': r.spendDate,
+        'spendCategoryId' : r.spendCategoryId,
+        'spendId':r.spendId
     } for r in records]
 
     df = pd.DataFrame(data)
