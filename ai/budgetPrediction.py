@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.metrics import mean_absolute_error
-from ai.utils import full_preprocess
+from ai.budgetUtils import full_preprocess
 
 def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_window=3):
 
@@ -26,23 +26,3 @@ def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_win
     print(f"✅ 테스트 MAE: {mae:,.0f}원")
 
     return preds
-
-
-''' # 실제 배포용 
-def budget_predict(test_df: pd.DataFrame, model_path='ai/rf_model.pkl') -> np.ndarray:
-    test_df['spendDate'] = pd.to_datetime(test_df['spendDate'])
-    test_df['week'] = test_df['spendDate'].dt.isocalendar().week
-    test_df['avg_spend'] = test_df.groupby('userId')['spendCost'].transform('mean')
-
-    weekly = test_df.groupby(['userId', 'week']).agg({
-        'spendCost': 'sum',
-        'avg_spend': 'mean'
-    }).reset_index()
-
-    X_test, _ = make_sliding_window_multi(weekly, window=8)
-
-    model = joblib.load(model_path)
-    preds = model.predict(X_test)
-    return preds
-
-'''
