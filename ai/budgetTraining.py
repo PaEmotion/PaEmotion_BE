@@ -6,9 +6,9 @@ import joblib
 from utils import make_sliding_window_multi
 from services.report.data import data_read
 
-def budgetTraining():
+def budget_train():
     # 1. 데이터 로드
-    df = pd.read_csv('../data/train.csv')
+    df = pd.read_csv('../data/budgetTrain.csv')
     df['spendDate'] = pd.to_datetime(df['spendDate'])
     df['week'] = df['spendDate'].dt.isocalendar().week
     
@@ -30,12 +30,12 @@ def budgetTraining():
     model.fit(X, y)
 
     # 6. 저장
-    joblib.dump(model, 'rf_model.pkl')
+    joblib.dump(model, 'ai/rf_model.pkl')
     print("🎉 모델 저장 완료: rf_model.pkl")
 
 '''
  # 실제 데이터로 학습하는 법, 서비스 사용시 학습시키지 않음
-def budgetTraining():
+def budget_train():
     # 1. 데이터 로드 (DB로부터)
     df = data_read()  # <- csv에서 DB로 변경됨
 
