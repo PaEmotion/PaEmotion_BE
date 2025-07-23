@@ -5,6 +5,8 @@ from db.session import get_db
 
 router = APIRouter(prefix="/ml")
 
+# 테스트용 라우터
+
 @router.get("/classify/{userId}")
 def typeClassification(
     userId: int,
