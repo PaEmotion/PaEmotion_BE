@@ -1,6 +1,6 @@
 from sqlalchemy import (
     Column, BigInteger, Integer, DateTime, Date, Enum, Text, ForeignKey,
-    PrimaryKeyConstraint, UniqueConstraint
+    PrimaryKeyConstraint, UniqueConstraint, String
 )
 from sqlalchemy.orm import relationship
 import enum
@@ -75,5 +75,6 @@ class UserReport(Base):
     reportDate = Column(Date, nullable=False)
     reportType = Column(Enum("daily", "weekly", "monthly"), nullable=False)
     reportText = Column(Text, nullable=False)
+    spendType = Column(String(50), nullable=True)
     
     user = relationship("User", back_populates="userReports")
