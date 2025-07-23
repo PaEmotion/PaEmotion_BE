@@ -9,7 +9,7 @@ from db.session import get_db
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
-# 리포트 저장 API
+# 리포트 저장 라우터
 @router.post("/create/{userId}", response_model=ReportRead, status_code=201)
 def reports_create(
     userId: int = Path(...),
@@ -28,7 +28,7 @@ def reports_create(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# 리포트 단건 조회 API (URL에서 리포트 아이디 받음)
+# 리포트 단건 조회 라우터 (URL에서 리포트 아이디 받음)
 @router.get("/{reportId}", response_model=ReportRead)
 def reports_read(
     reportId: int = Path(...),
@@ -40,7 +40,7 @@ def reports_read(
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-# 리포트 목록 조회 API (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
+# 리포트 목록 조회 라우터 (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
 @router.get("", response_model=List[ReportRead])
 def reports_readbylist(
     userId: Optional[int] = Query(None),
