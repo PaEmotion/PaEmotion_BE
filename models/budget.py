@@ -31,4 +31,4 @@ class CategoryBudget(Base):
     )
 
     total_budget = relationship("TotalBudget", back_populates="category_budgets")
-    spend_category = relationship("SpendCategory")
+    spend_category = relationship("SpendCategory", back_populates="category_budgets")

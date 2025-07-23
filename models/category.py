@@ -20,5 +20,5 @@ class SpendCategory(Base):
     spendCategoryName = Column('spendCategoryName', String(255), nullable=False)
 
     records = relationship('Record', back_populates='spendCategory')
-    categoryBudgets = relationship('CategoryBudget', back_populates='spendCategory', 
+    category_budgets = relationship('CategoryBudget', back_populates='spend_category', 
         cascade='all, delete-orphan', passive_deletes=True)
