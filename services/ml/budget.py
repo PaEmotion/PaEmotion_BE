@@ -1,5 +1,4 @@
-
-from services.report.data import budget_data_read
+from services.ml.data import budget_data_read
 from ai.budgetPrediction import budget_predict
 import joblib
 from sqlalchemy.orm import Session
