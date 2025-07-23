@@ -17,10 +17,6 @@ class BudgetCreate(BaseModel):
     budgetMonth: date = Field(...)
     categoryBudget: List[CategoryBudgetBase] = Field(...) 
 
-# 예산 수정 스키마
-class BudgetEdit(BaseModel):
-    categoryBudget: List[CategoryBudgetBase] = Field(...)
-
 # 예산 조회 스키마
 class BudgetRead(BaseModel):
     userId: int

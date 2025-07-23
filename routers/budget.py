@@ -3,57 +3,28 @@ from sqlalchemy.orm import Session
 from datetime import date
 
 from db.session import get_db
-from schemas.budget import (BudgetCreate, BudgetEdit, BudgetRead, LastSpentRead)
+from schemas.budget import (BudgetCreate, BudgetRead, LastSpentRead)
 from services.budget import BudgetService
 
-router = APIRouter(prefix="/budget", tags=["budget"])
+router = APIRouter(prefix="/budgets", tags=["budgets"])
 
 # 예산 등록 라우터 
 @router.post("/create/{userId}")
-def budget_create(
+def budgets_create(
     userId: int = Path(...),
     budgetData: BudgetCreate = Body(...),
     db: Session = Depends(get_db)
 ):
-    return BudgetService.budget_create(db, userId, budgetData)
+    return BudgetService.budgets_create(db, userId, budgetData)
 
 # 예산 조회 라우터 (라우터로 유저아이디 받고, 쿼리파람으로 조회할 달 입력)
 @router.get("/{userId}", response_model=BudgetRead)
-def budget_read(
+def budgets_read(
     userId: int = Path(...),
     budgetMonth: date = Query(...),
     db: Session = Depends(get_db)
 ):
-    return BudgetService.budget_read(db, userId, budgetMonth)
-
-# 예산 수정 라우터 (라우터로 유저아이디 받고, 쿼리파람으로 수정할 달 입력)
-@router.put("/edit/{userId}")
-def budget_edit(
-    userId: int = Path(...),
-    budgetMonth: date = Query(...),
-    budgetData: BudgetEdit = Body(...),
-    db: Session = Depends(get_db)
-):
-    return BudgetService.budget_edit(db, userId, budgetMonth, budgetData)
-
-# 예산 전체 삭제 라우터 (라우터로 유저아이디 받고, 쿼리파람으로 삭제할 달 입력)
-@router.delete("/delete/{userId}")
-def budget_all_delete(
-    userId: int = Path(...),
-    budgetMonth: date = Query(...),
-    db: Session = Depends(get_db)
-):
-    BudgetService.budget_all_delete(db, userId, budgetMonth)
-    return {"detail": "예산이 삭제되었습니다."}
-
-# 예산 카테고리별 삭제 라우터 (라우터로 유저아이디, 카테고리별예산아이디 받기)
-@router.delete("/delete/{userId}/{categoryBudgetId}")
-def budget_category_delete(
-    categoryBudgetId: int = Path(...),
-    db: Session = Depends(get_db)
-):
-    BudgetService.budget_category_delete(db, categoryBudgetId)
-    return {"detail": "카테고리별 예산이 삭제되었습니다."}
+    return BudgetService.budgets_read(db, userId, budgetMonth)
 
 # 지난 달 소비 금액 조회 라우터 (라우터로 유저아이디 받고, 쿼리파람으로 소비금액 조회할 달 입력)
 @router.get("/lastspent/{userId}", response_model=LastSpentRead)
