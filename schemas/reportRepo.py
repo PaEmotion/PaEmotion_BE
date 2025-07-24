@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import date
 from enum import Enum as PyEnum
+from typing import Optional
 
 class ReportTypeEnum(str, PyEnum):
     daily = "daily"
@@ -12,7 +13,7 @@ class reportSave(BaseModel):
     reportDate: date
     reportType: ReportTypeEnum
     reportText: str
-    spendType: str
+    spendType: Optional[str] = ""
 
 # 리포트 조회 스키마
 class ReportRead(reportSave):
