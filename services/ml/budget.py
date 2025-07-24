@@ -6,9 +6,9 @@ from typing import Optional
 
 
 
-def training_and_prediction (db: Session, userId: int, spend_date: Optional[str] = None):
+def training_and_prediction (db: Session, userId: int):
     # 1. 데이터 조회하기
-    df = budget_data_read(db, userId, spend_date)
+    df = budget_data_read(db, userId)
     if df.empty:
         print("⚠️ 조회된 데이터가 없습니다.")
         return []

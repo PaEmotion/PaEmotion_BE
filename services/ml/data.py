@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from datetime import date
+from datetime import datetime, timedelta
 from typing import Optional
 from models.record import Record
 from models.budget import TotalBudget, CategoryBudget
@@ -8,12 +8,16 @@ import pandas as pd
 
 
 # 예산 예측 모델 데이터 로드 함수, DataFrame 형태로 반환
-def budget_data_read(db: Session, user_id: int, spend_date: Optional[str] = None) -> pd.DataFrame:
-   
-    query = db.query(Record).filter(Record.userId == user_id)
-    if spend_date:
-        query = query.filter(func.date(Record.spendDate) == spend_date)
+def budget_data_read(db: Session, userId: int) -> pd.DataFrame:
+    now = datetime.now()
+    start_date = now - timedelta(weeks=8)
 
+    query = db.query(Record).filter(
+        Record.userId == userId,
+        Record.spendDate >= start_date,
+        Record.spendDate <= now
+        )
+    
     records = query.all()
 
     if not records:

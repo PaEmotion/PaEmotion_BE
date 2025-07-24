@@ -44,6 +44,7 @@ class ReportService:
             raise ValueError("리포트를 찾을 수 없습니다.")
         return report
     
+        
     # 리포트 리스트 조회 함수 (유저, 기간 또는 날짜별로)
     @staticmethod
     def reports_readbylist(db: Session, user_id: Optional[int] = None, report_date: Optional[date] = None,
@@ -58,4 +59,11 @@ class ReportService:
         elif start_date and end_date:
             query = query.filter(UserReport.reportDate.between(start_date, end_date))
 
-        return query.order_by(UserReport.reportDate.desc()).all()
+        reports = query.order_by(UserReport.reportDate.desc()).all()
+
+            # spendType이 None이면 빈 문자열로 변경
+        for report in reports:
+            if report.spendType is None:
+                report.spendType = ""
+
+        return reports
