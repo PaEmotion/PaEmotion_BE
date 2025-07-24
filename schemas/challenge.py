@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from datetime import date
+import re
 
 # 챌린지 생성 스키마
 class ChallengeCreate(BaseModel):
@@ -9,6 +10,21 @@ class ChallengeCreate(BaseModel):
     password: Optional[str] = None
     challengeType: bool  
     goalCount: int  
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v):
+        if v is None:
+            return v
+        if len(v) < 8:
+            raise ValueError('비밀번호는 8자 이상으로 입력해 주세요.')
+        if not re.search(r'[A-Za-z]', v):
+            raise ValueError('영어가 최소 1개 포함되어야 합니다.')
+        if not re.search(r'\d', v):
+            raise ValueError('숫자가 최소 1개 포함되어야 합니다.')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
+            raise ValueError('특수문자가 최소 1개 포함되어야 합니다.')
+        return v
 
 # 챌린지 참여 스키마
 class ChallengeJoin(BaseModel):

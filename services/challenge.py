@@ -160,7 +160,11 @@ class ChallengeService:
             if end_date > current_date:
                 challenges_list.append(challenge)
 
-        # 4. 결과 반환
+        # 4. 검색 결과가 없으면 예외 반환
+        if not challenges_list:
+            return {"message": "검색 결과가 없습니다.", "results": []}
+
+        # 5. 결과 반환
         return challenges_list
 
     ## 챌린지 상세 정보 조회 함수
