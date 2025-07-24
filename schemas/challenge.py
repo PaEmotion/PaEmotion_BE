@@ -28,6 +28,7 @@ class ChallengeCreate(BaseModel):
 
 # 챌린지 참여 스키마
 class ChallengeJoin(BaseModel):
+    challengeId: int
     password: Optional[str] = None
 
 # 챌린지 리스트 조회 스키마
@@ -37,7 +38,7 @@ class ChallengeListRead(BaseModel):
     challengeType: bool
     publicityType: bool
     createdDate: date
-    currentMemberCount: int
+    ParticipantCount: int
     class Config: orm_mode = True
 
 # 챌린지 단건 조회 스키마

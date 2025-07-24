@@ -1,3 +1,4 @@
+# 서비스함수
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func
 from datetime import datetime, timedelta
@@ -102,8 +103,8 @@ class ChallengeService:
                     "name": challenge.name,
                     "publicityType": challenge.publicityType,
                     "challengeType": challenge.challengeType,
-                    "endDate": end_date,
-                    "participantCount": participant_count
+                    "createdDate": challenge.createdDate,
+                    "participantCount": participant_count  # participantCount로 변경
                 })
 
         # 4. 결과 반환
@@ -137,7 +138,8 @@ class ChallengeService:
             "name": challenge.name,
             "publicityType": challenge.publicityType,
             "challengeType": challenge.challengeType,
-            "endDate": end_date,
+            "createdDate": challenge.createdDate,
+            "goalCount": challenge.goalCount,
             "participantCount": participant_count
         }
 
@@ -162,7 +164,7 @@ class ChallengeService:
 
         # 4. 검색 결과가 없으면 예외 반환
         if not challenges_list:
-            return {"message": "검색 결과가 없습니다.", "results": []}
+            raise HTTPException(status_code=404, detail="검색 결과가 없습니다.")
 
         # 5. 결과 반환
         return challenges_list
@@ -210,7 +212,7 @@ class ChallengeService:
             member_info.append(ChallengeMemberRead(
                 userId=member.userId,
                 isHost=member.isHost,
-                contribution=round(contribution * 100, 1)
+                contributionRate=round(contribution * 100, 1)
             ))
 
         # 10. 팀 진행률 계산
@@ -223,9 +225,10 @@ class ChallengeService:
         return ChallengeDetailRead(
             challengeId=challenge.challengeId,
             name=challenge.name,
+            publicityType=challenge.publicityType,
             challengeType=challenge.challengeType,
             createdDate=challenge.createdDate,
-            endDate=end_date,
-            members=member_info,
-            progress=round(progress * 100, 1)
+            goalCount=challenge.goalCount,
+            teamProgressRate=round(progress * 100, 1),
+            members=member_info
         )
