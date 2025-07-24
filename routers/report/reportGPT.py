@@ -25,8 +25,10 @@ async def create_report(
 
     # 2. records -> 문자열 데이터로 포맷하기
     if not gpt_data:
-        raise HTTPException(status_code=404, detail="해당 기간에 소비 기록이 없습니다.")
+        return {"success": False, "message": "해당 기간에 소비 기록이 없습니다."}
 
+    if gpt_data['total_spend'] <= 0 or sum(gpt_data['emotion_count'].values()) == 0:
+        return {"success": False, "message": "소비 기록이 부족하여 리포트를 생성할 수 없습니다."}
 
     if request.period == "monthly":
         data_str = format_report_data(
@@ -57,7 +59,10 @@ async def create_report(
             int(budget_prediction[0]) if budget_prediction else None
         )
 
-
+    existing_report = ReportService.get_existing_report(db, userId, request.reportDate, request.period)
+    if existing_report:
+        return {"report": existing_report.reportText}
+    
     # 3. GPT 호출
     report = generate_report(request.period, data_str, request.tone, spend_type=consumption_type or "", budget_prediction=budget_prediction)
 
