@@ -3,30 +3,11 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
 
-from schemas.report import ReportCreate, ReportRead
-from services.report.report import ReportService
+from schemas.reportRepo import reportSave, ReportRead
+from services.report.reportRepo import ReportService
 from db.session import get_db
 
 router = APIRouter(prefix="/reports", tags=["reports"])
-
-# 리포트 저장 라우터
-@router.post("/create/{userId}", response_model=ReportRead, status_code=201)
-def reports_create(
-    userId: int = Path(...),
-    report_data: ReportCreate = Body(...),
-    db: Session = Depends(get_db)
-):
-    try:
-        report = ReportService.report_create(
-            db=db,
-            user_id=userId,
-            report_date=report_data.reportDate,
-            report_type=report_data.reportType,
-            report_text=report_data.reportText
-        )
-        return report
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 # 리포트 단건 조회 라우터 (URL에서 리포트 아이디 받음)
 @router.get("/{reportId}", response_model=ReportRead)

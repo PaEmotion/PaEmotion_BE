@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Path, Body
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import date
+from typing import Optional
 
 from db.session import get_db
 from schemas.record import RecordsCreate, RecordsRead, RecordsEdit
@@ -16,13 +17,17 @@ def records_create(record: RecordsCreate, db: Session = Depends(get_db)):
     return new_record
 
 # 소비내역 조회 라우터
-@router.get("/{userId}", response_model=List[RecordsRead]) # 일건
+@router.get("/{userId}", response_model=List[RecordsRead]) 
 def records_readbydate(
     userId: int = Path(...),
-    spendDate: date = Query(...), # 날짜는 쿼리파람으로
+    startDate: Optional[date] = Query(None),
+    endDate: Optional[date] = Query(None),
     db: Session = Depends(get_db) 
 ):
-    result = record_service.records_readbydate(db=db, user_id=userId, spend_date=spendDate)
+    if not startDate or not endDate:
+        raise HTTPException(status_code=400, detail="startDate와 endDate를 모두 입력해야 합니다.")
+    
+    result = record_service.records_readbydate(db=db, user_id=userId,  start_date=startDate, end_date=endDate)
     if not result:
         raise HTTPException(status_code=404, detail="소비내역을 찾을 수 없습니다.")
     return result

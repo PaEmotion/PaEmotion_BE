@@ -27,6 +27,17 @@ def classification_type(test_df, year, month, model_path='ai/type.pkl'):
     # 예측
     y_pred = model.predict(X_test)
 
-    pred_label = f"{y_pred[0]}형입니다"
+    # 출력을 위한 한글 이름 매핑
+    label_map = {
+        0: "감정소비형",
+        1: "계획소비형",
+        2: "충동소비형",
+        3: "관계지향형",
+        4: "무지출지향형",
+        5: "소비성향편중형"
+    }
+
+    label_name = label_map.get(y_pred[0], f"{y_pred[0]}형")  # 예외처리
+    pred_label = f"{label_name}입니다"
 
     return pred_label

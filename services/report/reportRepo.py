@@ -1,28 +1,35 @@
 from sqlalchemy.orm import Session
 from models.report import UserReport
-from schemas.report import ReportTypeEnum
+from schemas.reportRepo import ReportTypeEnum
 from datetime import date
 from typing import Optional, List
 
 class ReportService:
     # 리포트 저장 함수
     @staticmethod
-    def reports_create(db: Session, user_id: int, report_date: date, 
-                      report_type: ReportTypeEnum, report_text: str) -> UserReport:
-        existing = db.query(UserReport).filter_by(
-            userId=user_id,
-            reportDate=report_date,
-            reportType=report_type
+    def reports_save(
+        db: Session, 
+        userId: int, 
+        reportDate: date, 
+        reportType: ReportTypeEnum, 
+        reportText: str, 
+        spendType: Optional[str] = None
+        ) -> UserReport:
+        existing = db.query(UserReport).filter(
+            UserReport.userId==userId,
+            UserReport.reportDate==reportDate,
+            UserReport.reportType==reportType
         ).first()
 
         if existing:
             raise ValueError("해당 리포트가 이미 존재합니다.")
 
         report = UserReport(
-            userId=user_id,
-            reportDate=report_date,
-            reportType=report_type,
-            reportText=report_text
+            userId=userId,
+            reportDate=reportDate,
+            reportType=reportType,
+            reportText=reportText,
+            spendType=spendType
         )
         db.add(report)
         db.commit()
