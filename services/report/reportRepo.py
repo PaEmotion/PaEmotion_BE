@@ -5,6 +5,20 @@ from datetime import date
 from typing import Optional, List
 
 class ReportService:
+
+    @staticmethod
+    def get_existing_report(
+        db: Session,
+        userId: int,
+        reportDate: date,
+        reportType: ReportTypeEnum
+        ) -> Optional[UserReport]:
+        return db.query(UserReport).filter(
+            UserReport.userId==userId,
+            UserReport.reportDate==reportDate,
+            UserReport.reportType==reportType
+        ).first()
+
     # 리포트 저장 함수
     @staticmethod
     def reports_save(
@@ -15,14 +29,6 @@ class ReportService:
         reportText: str, 
         spendType: Optional[str] = None
         ) -> UserReport:
-        existing = db.query(UserReport).filter(
-            UserReport.userId==userId,
-            UserReport.reportDate==reportDate,
-            UserReport.reportType==reportType
-        ).first()
-
-        if existing:
-            raise ValueError("해당 리포트가 이미 존재합니다.")
 
         report = UserReport(
             userId=userId,
