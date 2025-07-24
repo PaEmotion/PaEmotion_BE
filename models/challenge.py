@@ -12,14 +12,13 @@ class Challenge(Base):
     password = Column(String(255), nullable=True)  
     challengeType = Column(Boolean, nullable=False)  
     goalCount = Column(Integer, nullable=False)  
-    createdAt = Column(DateTime(timezone=True), server_default=func.now())  
+    createdDate = Column(DateTime(timezone=True), server_default=func.now())  
 
 class ChallengeParticipant(Base):
     __tablename__ = "challenge_participant"
 
     challengeId = Column(BigInteger, ForeignKey("challenge.challengeId", ondelete="CASCADE"), primary_key=True)
     userId = Column(BigInteger, ForeignKey("user.userId", ondelete="CASCADE"), primary_key=True)
-
     isHost = Column(Boolean, nullable=False)  
 
     challenge = relationship("Challenge", back_populates="participants")

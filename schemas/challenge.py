@@ -35,6 +35,10 @@ class ChallengeRead(BaseModel):
     isParticipating: Optional[bool] = False  
     class Config: orm_mode = True
 
+# 챌린지 검색 스키마
+class ChallengeSearch(ChallengeListRead):
+    class Config: orm_mode = True
+
 # 챌린지 멤버 조회 스키마
 class ChallengeMemberRead(BaseModel):
     userId: int
