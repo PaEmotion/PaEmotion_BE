@@ -27,7 +27,7 @@ def report_prompt(period: str, data: str, tone: str,spend_type: str="",  budget_
 
     # 예측 금액 생성
     prediction_line = (
-        f"6. 예측된 다음주 소비 금액은 약 {int(budget_prediction):,}원 임을 출력하세요."
+        f"6. 또한 이라는 연결어를 사용한 뒤 예측된 다음주 소비 금액은 약 {int(budget_prediction):,}원 임을 출력하세요. 이를 참고하여 다음주 현명한 소비를 해보라는 응원을 해주세요."
         if budget_prediction not in [None, ""] else ""
     )
 
