@@ -13,12 +13,13 @@ def records_create(db: Session, record_data: RecordsCreate) -> Record:
     return new_record
 
 # 소비내역 조회 함수
-def records_readbydate(db: Session, user_id: int, spend_date: date): #일건
+def records_readbydate(db: Session, user_id: int, start_date: date, end_date: date): 
     return (
         db.query(Record)
         .filter(
             Record.userId == user_id,
-            func.date(Record.spendDate) == spend_date
+            Record.spendDate >= start_date,
+            Record.spendDate <= end_date
         )
         .all()
     )
