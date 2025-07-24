@@ -14,7 +14,7 @@ class TotalBudget(Base):
         UniqueConstraint('userId', 'budgetMonth', name='uniq_user_month'),
     )
 
-    user = relationship("User", back_populates="total_budgets")
+    user = relationship("User", back_populates="totalBudgets")
     category_budgets = relationship("CategoryBudget", back_populates="total_budget", cascade="all, delete-orphan")
 
 
@@ -31,4 +31,4 @@ class CategoryBudget(Base):
     )
 
     total_budget = relationship("TotalBudget", back_populates="category_budgets")
-    spend_category = relationship("SpendCategory")
+    spend_category = relationship("SpendCategory", back_populates="category_budgets")

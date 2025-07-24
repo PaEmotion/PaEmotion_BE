@@ -1,5 +1,5 @@
 
-from services.report.data import type_data_read
+from services.ml.data import type_data_read
 from ai.typeClassification import classification_type
 from sqlalchemy.orm import Session
 
