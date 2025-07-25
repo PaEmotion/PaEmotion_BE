@@ -138,7 +138,7 @@ class ChallengeService:
                         name=challenge.name,
                         publicityType=challenge.publicityType,
                         challengeType=challenge.challengeType,
-                        createdDate=challenge.createdDate,
+                        endDate = end_date,
                         participantCount=participant_count,
                     )
                 )
@@ -174,7 +174,7 @@ class ChallengeService:
             name=challenge.name,
             publicityType=challenge.publicityType,
             challengeType=challenge.challengeType,
-            createdDate=challenge.createdDate,
+            endDate=end_date,
             goalCount=challenge.goalCount,
             participantCount=participant_count,
         )
@@ -210,7 +210,7 @@ class ChallengeService:
                     name=challenge.name,
                     challengeType=challenge.challengeType,
                     publicityType=challenge.publicityType,
-                    createdDate=challenge.createdDate,
+                    endDate=challenge.createdDate + timedelta(days=7),
                     participantCount=participant_count,
                 )
             )
@@ -294,7 +294,7 @@ class ChallengeService:
             name=challenge.name,
             publicityType=challenge.publicityType,
             challengeType=challenge.challengeType,
-            createdDate=challenge.createdDate,
+            endDate=end_date,
             goalCount=challenge.goalCount,
             guineaFeedCurrent=guinea_feed_current,
             teamProgressRate=round(progress * 100, 1),

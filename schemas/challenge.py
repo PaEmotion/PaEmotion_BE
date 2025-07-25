@@ -37,7 +37,7 @@ class ChallengeListRead(BaseModel):
     name: str
     challengeType: bool
     publicityType: bool
-    createdDate: date
+    endDate: date
     participantCount: int
     class Config: orm_mode = True
 
@@ -63,7 +63,7 @@ class ChallengeDetailRead(BaseModel):
     name: str
     publicityType: bool
     challengeType: bool
-    createdDate: date
+    endDate: date
     goalCount: int
     guineaFeedCurrent: int
     teamProgressRate: float 
