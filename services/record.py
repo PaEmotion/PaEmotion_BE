@@ -5,7 +5,7 @@ from datetime import date
 from sqlalchemy import func
 
 # 소비내역 생성 함수
-def records_create(db: Session, record_data: RecordsCreate) -> Record: 
+def create_records(db: Session, record_data: RecordsCreate) -> Record: 
     new_record = Record(**record_data.model_dump())
     db.add(new_record)
     db.commit()
@@ -13,7 +13,7 @@ def records_create(db: Session, record_data: RecordsCreate) -> Record:
     return new_record
 
 # 소비내역 조회 함수
-def records_readbydate(db: Session, user_id: int, start_date: date, end_date: date): # 기간
+def readbydate_records(db: Session, user_id: int, start_date: date, end_date: date): # 기간
     return (
         db.query(Record)
         .filter(
@@ -23,11 +23,11 @@ def records_readbydate(db: Session, user_id: int, start_date: date, end_date: da
         )
         .all()
     )
-def records_read(db: Session, user_id: int, spend_id: int): #단건
+def read_records(db: Session, user_id: int, spend_id: int): #단건
     return db.query(Record).filter_by(userId=user_id, spendId=spend_id).first()
 
 # 소비내역 수정 함수
-def records_edit(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record | None | str:
+def edit_records(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record | None | str:
     target_record = db.query(Record).filter(Record.spendId == spend_id).first()
     if not target_record: return None
 
@@ -46,7 +46,7 @@ def records_edit(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record
     return target_record
 
 # 소비내역 삭제 함수
-def records_delete(db: Session, spend_id: int) -> bool:
+def delete_records(db: Session, spend_id: int) -> bool:
     target_record = db.query(Record).filter(Record.spendId == spend_id).first()
     if not target_record:
         return False
