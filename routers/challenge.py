@@ -16,7 +16,7 @@ router = APIRouter(prefix="/challenges", tags=["challenges"])
 def create_challenge(
     challenge_data: ChallengeCreate,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)  # User 객체 전체
+    current_user = Depends(get_current_user) 
 ):
     ChallengeService.create_challenge(db, current_user.userId, challenge_data)
     return {"message": "챌린지를 성공적으로 생성했습니다."}
