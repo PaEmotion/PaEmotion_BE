@@ -284,7 +284,6 @@ class ChallengeService:
         if challenge.challengeType:  # 긍정
             progress = team_total_spend / guinea_feed_goal if guinea_feed_goal > 0 else 0.0
             guinea_feed_current = min(team_total_spend, guinea_feed_goal)  
-
         else:  # 부정
             progress = max((guinea_feed_goal - team_total_spend) / guinea_feed_goal, 0.0) if guinea_feed_goal > 0 else 0.0
             guinea_feed_current = max(guinea_feed_goal - team_total_spend, 0)
