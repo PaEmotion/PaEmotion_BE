@@ -16,29 +16,46 @@ class ChallengeService:
     @staticmethod
     def create_challenge(db: Session, user_id: int, challenge_data: ChallengeCreate):
 
-        # 1. 챌린지 종료일 계산
-        created_date = datetime.now()
-        end_date = created_date + timedelta(days=7)
+        # 1. 현재 날짜 조회
+        current_date = datetime.now()
 
-        # 2. 새로운 챌린지 생성
+        # 2. 현재 참여 중인 챌린지가 있는지 확인
+        already_participation = (
+            db.query(ChallengeParticipant)
+            .join(Challenge, Challenge.challengeId == ChallengeParticipant.challengeId)
+            .filter(
+                ChallengeParticipant.userId == user_id,
+                Challenge.createdDate <= current_date,
+                Challenge.createdDate + timedelta(days=7) > current_date 
+            )
+            .first()
+        )
+
+        if already_participation:
+            raise HTTPException(status_code=400, detail="이미 참여 중인 챌린지가 있어 새로운 챌린지를 생성할 수 없습니다.")
+        
+        # 3. 챌린지 종료일 계산
+        end_date = current_date + timedelta(days=7)
+
+        # 4. 새로운 챌린지 생성
         new_challenge = Challenge(
             name=challenge_data.name,
             publicityType=challenge_data.publicityType,
             password=challenge_data.password if not challenge_data.publicityType else None,
             challengeType=challenge_data.challengeType,
             goalCount=challenge_data.goalCount,
-            createdDate=created_date,
+            createdDate=current_date
         )
         db.add(new_challenge)
         db.flush()
 
-        # 3. 챌린지 생성자를 방장으로 등록
+        # 5. 방장으로 등록
         host_participant = ChallengeParticipant(
             challengeId=new_challenge.challengeId, userId=user_id, isHost=True
         )
         db.add(host_participant)
 
-        # 4. DB 반영
+        # 6. DB 반영
         db.commit()
 
     ## 챌린지 참여 함수
@@ -48,20 +65,31 @@ class ChallengeService:
         # 1. 현재 날짜 조회
         current_date = datetime.now()
 
-        # 2. 이미 참여한 챌린지가 있는지 확인
-        exists = (
+        # 2. 동일 챌린지에 이미 참여했는지 확인
+        already_joined = db.query(ChallengeParticipant).filter_by(
+            userId=user_id,
+            challengeId=challenge_data.challengeId
+        ).first()
+
+        if already_joined:
+            raise HTTPException(status_code=400, detail="이미 이 챌린지에 참여했습니다.")
+
+        # 3. 다른 챌린지에 참여중인지 확인
+        in_other_challenge = (
             db.query(ChallengeParticipant)
             .join(Challenge)
             .filter(
                 ChallengeParticipant.userId == user_id,
+                Challenge.challengeId != challenge_data.challengeId,  
                 (Challenge.createdDate + timedelta(days=7)) > current_date,
             )
             .first()
         )
-        if exists:
-            raise HTTPException(status_code=400, detail="이미 챌린지에 참여 중입니다.")
 
-        # 3. 챌린지 조회 및 검증
+        if in_other_challenge:
+            raise HTTPException(status_code=400, detail="이미 다른 챌린지에 참여 중입니다.")
+
+        # 4. 챌린지 조회 및 검증
         challenge = db.query(Challenge).filter_by(challengeId=challenge_data.challengeId).first()
         if not challenge:
             raise HTTPException(status_code=404, detail="챌린지를 찾을 수 없습니다.")
@@ -75,7 +103,7 @@ class ChallengeService:
         ):
             raise HTTPException(status_code=400, detail="최대 인원을 초과했습니다.")
 
-        # 4. 참여자로 등록
+        # 5. 참여자로 등록
         participant = ChallengeParticipant(
             challengeId=challenge_data.challengeId, userId=user_id, isHost=False
         )
@@ -174,11 +202,7 @@ class ChallengeService:
             .all()
         )
 
-        # 3. 검색 결과가 없으면 예외 처리
-        if not results:
-            raise HTTPException(status_code=404, detail="검색 결과가 없습니다.")
-
-        # 4. 검색 결과 시 유효한 챌린지를 리스트에 추가
+        # 3. 검색 결과 시 유효한 챌린지를 리스트에 추가
         challenges_list = []
         for challenge, participant_count in results:
             challenges_list.append(
@@ -192,7 +216,7 @@ class ChallengeService:
                 )
             )
 
-        # 5. 결과 반환
+        # 4. 결과 반환
         return challenges_list
     
     ## 챌린지 상세 정보 조회 함수
@@ -219,7 +243,7 @@ class ChallengeService:
 
         # 6. 감정 ID 긍정/부정 분류 
         positive_emotion_ids = [1, 2, 3]  
-        negative_emotion_ids = [4, 5, 6, 7, 8, 9, 10, 11]  
+        negative_emotion_ids = [4, 5, 6, 7, 8, 9, 10, 11, 12]  
 
         # 7. 개인별 소비 횟수 기간, 감정 별로 필터링하여 집계
         for member in members:
@@ -274,7 +298,7 @@ class ChallengeService:
             challengeType=challenge.challengeType,
             createdDate=challenge.createdDate,
             goalCount=challenge.goalCount,
+            guineaFeedCurrent=guinea_feed_current,
             teamProgressRate=round(progress * 100, 1),
-            members=member_info,
-            guineaFeedCurrent=guinea_feed_current
+            members=member_info
         )

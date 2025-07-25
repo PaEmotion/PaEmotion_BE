@@ -65,7 +65,7 @@ class ChallengeDetailRead(BaseModel):
     challengeType: bool
     createdDate: date
     goalCount: int
+    guineaFeedCurrent: int
     teamProgressRate: float 
     members: List[ChallengeMemberRead]
-    guineaFeedCurrent: int
     class Config: orm_mode = True

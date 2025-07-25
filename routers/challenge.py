@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict, Any
 
 from db.session import get_db
 from schemas.challenge import (ChallengeCreate, ChallengeJoin, ChallengeListRead, 
@@ -36,7 +37,14 @@ def search_challenge(
     name: str,
     db: Session = Depends(get_db)
 ):
-    return ChallengeService.search_challenge(db, name)
+    result = ChallengeService.search_challenge(db, name)
+
+    if not result:
+        return JSONResponse(
+            content={"message": "검색 결과가 없습니다.", "challenges": []},
+            status_code=200
+        )
+    return result
 
 # 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
