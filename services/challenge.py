@@ -98,8 +98,7 @@ class ChallengeService:
         if (
             db.query(ChallengeParticipant)
             .filter_by(challengeId=challenge_data.challengeId)
-            .count()
-            >= 5
+            .count() >= 5
         ):
             raise HTTPException(status_code=400, detail="최대 인원을 초과했습니다.")
 
