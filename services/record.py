@@ -13,7 +13,7 @@ def records_create(db: Session, record_data: RecordsCreate) -> Record:
     return new_record
 
 # 소비내역 조회 함수
-def records_readbydate(db: Session, user_id: int, start_date: date, end_date: date): 
+def records_readbydate(db: Session, user_id: int, start_date: date, end_date: date): # 기간
     return (
         db.query(Record)
         .filter(

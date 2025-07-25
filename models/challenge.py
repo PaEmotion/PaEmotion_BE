@@ -1,7 +1,7 @@
 from sqlalchemy import Column, BigInteger, Boolean, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from db.session import Base
+from db.base import Base
 
 class Challenge(Base):
     __tablename__ = "challenge"
@@ -12,7 +12,9 @@ class Challenge(Base):
     password = Column(String(255), nullable=True)  
     challengeType = Column(Boolean, nullable=False)  
     goalCount = Column(Integer, nullable=False)  
-    createdDate = Column(DateTime(timezone=True), server_default=func.now())  
+    createdDate = Column(DateTime(timezone=False), server_default=func.now())  
+    
+    participants = relationship("ChallengeParticipant", back_populates="challenge")
 
 class ChallengeParticipant(Base):
     __tablename__ = "challenge_participant"

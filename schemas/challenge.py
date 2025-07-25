@@ -38,17 +38,11 @@ class ChallengeListRead(BaseModel):
     challengeType: bool
     publicityType: bool
     createdDate: date
-    ParticipantCount: int
+    participantCount: int
     class Config: orm_mode = True
 
 # 챌린지 단건 조회 스키마
-class ChallengeRead(BaseModel):
-    challengeId: int
-    name: str
-    publicityType: bool
-    challengeType: bool
-    createdDate: date
-    goalCount: int
+class ChallengeRead(ChallengeListRead):
     isParticipating: Optional[bool] = False  
     class Config: orm_mode = True
 
@@ -73,4 +67,5 @@ class ChallengeDetailRead(BaseModel):
     goalCount: int
     teamProgressRate: float 
     members: List[ChallengeMemberRead]
+    guineaFeedCurrent: int
     class Config: orm_mode = True

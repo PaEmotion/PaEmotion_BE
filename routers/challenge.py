@@ -30,6 +30,14 @@ def join_challenge(
     ChallengeService.join_challenge(db, current_user.userId, join_data)
     return {"message": "챌린지에 성공적으로 참여했습니다."}
 
+# 챌린지 검색 라우터
+@router.get("/search", response_model=List[ChallengeListRead])
+def search_challenge(
+    name: str,
+    db: Session = Depends(get_db)
+):
+    return ChallengeService.search_challenge(db, name)
+
 # 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
 def read_challenges_list(
@@ -45,16 +53,8 @@ def read_challenge(
 ):
     return ChallengeService.read_challenge(db, challengeId)
 
-# 챌린지 검색 라우터
-@router.get("/search", response_model=List[ChallengeListRead])
-def search_challenge(
-    q: str,
-    db: Session = Depends(get_db)
-):
-    return ChallengeService.search_challenge(db, q)
-
 # 챌린지 상세 정보 조회 라우터
-@router.get("/{challengeId}/detail", response_model=ChallengeDetailRead)
+@router.get("/detail/{challengeId}", response_model=ChallengeDetailRead)
 def read_challenge_detail(
     challengeId: int,
     db: Session = Depends(get_db),
