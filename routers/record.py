@@ -59,7 +59,7 @@ def edit_records(
 
 # 소비내역 삭제 라우터
 @router.delete("/delete/{spendId}")
-def delte_records(
+def delete_records(
     spendId: int = Path(...),
     db: Session = Depends(get_db)
 ):

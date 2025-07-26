@@ -57,6 +57,20 @@ class ChallengeMemberRead(BaseModel):
     contributionRate: float
     class Config: orm_mode = True
 
+# 멤버별 소비 횟수 및 기여도 계산용 스키마
+class ChallengeMemberContribution(BaseModel):
+    userId: int
+    isHost: bool
+    spendCount: int
+    contributionRate: float
+    class Config:
+        orm_mode = True
+
+# 팀 전체 진행률 및 기니피그 먹이 계산용 스키마
+class ChallengeTeamProgress(BaseModel):
+    teamProgressRate: float
+    guineaFeedCount: int
+
 # 챌린지 상세 정보 조회 스키마
 class ChallengeDetailRead(BaseModel):
     challengeId: int
@@ -67,5 +81,5 @@ class ChallengeDetailRead(BaseModel):
     goalCount: int
     guineaFeedCurrent: int
     teamProgressRate: float 
-    members: List[ChallengeMemberRead]
+    participantsInfo: List[ChallengeMemberRead]
     class Config: orm_mode = True
