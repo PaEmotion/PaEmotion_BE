@@ -6,7 +6,7 @@ from models.challenge import Challenge, ChallengeParticipant
 from models.record import Record
 from schemas.challenge import ChallengeMemberContribution, ChallengeTeamProgress
 
-## 개인, 팀 관련 집계 계산 함수들 (1, 2, 3) ##
+## 개인, 팀 관련 집계 계산 함수들 (1, 2) ##
 class ChallengeCalculateService:
 
      ## 1. 멤버 소비 횟수 및 기여도 계산 함수

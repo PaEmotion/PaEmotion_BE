@@ -10,7 +10,7 @@ from services.challenge.validateService import ChallengeValidateService
 from services.challenge.participantService import ChallegeParticipantService
 from services.challenge.calculateService import ChallengeCalculateService
 
-## 챌린지 조회 함수들 ##
+## 챌린지 조회 함수 (1, 2, 3) ##
 class ChallengeReadService:
     
     ## 1. 챌린지 목록 조회 함수
@@ -103,9 +103,9 @@ class ChallengeReadService:
             teamProgressRate=team_progress.teamProgressRate,
                 participantsInfo=[
                     ChallengeMemberRead(
-                        userId=p.userId,
-                        isHost=p.isHost,
-                        contributionRate=p.contributionRate
-                    ) for p in participants_contribution
+                        userId=participant.userId,
+                        isHost=participant.isHost,
+                        contributionRate=participant.contributionRate
+                    ) for participant in participants_contribution
                 ]
             )
