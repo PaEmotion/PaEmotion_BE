@@ -20,3 +20,4 @@ class User(Base):
     adminDailyReports = relationship("AdminDailyReport", back_populates="user")
     userReports = relationship("UserReport", back_populates="user")
     totalBudgets = relationship("TotalBudget", back_populates="user")
+    challengeParticipants = relationship("ChallengeParticipant", back_populates="user", cascade="all, delete-orphan")

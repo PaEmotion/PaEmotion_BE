@@ -12,6 +12,7 @@ from routers.ml.budget import router as ml_budget_router
 from routers.ml.type import router as type_router
 from routers.report.reportGPT import router as reportGPT_router
 from routers.budget import router as budget_router
+from routers.challenge import router as challenge_router
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(ml_budget_router)
 app.include_router(type_router)
 app.include_router(reportGPT_router)
 app.include_router(budget_router)
+app.include_router(challenge_router)
 
 @app.get("/")
 def read_root():
