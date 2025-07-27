@@ -39,6 +39,7 @@ class ChallengeReadService:
                         publicityType=challenge.publicityType,
                         challengeType=challenge.challengeType,
                         endDate=end_date.date(),
+                        goalCount=challenge.goalCount,
                         participantCount=participants_count,
                     )
                 )
