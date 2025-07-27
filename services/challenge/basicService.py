@@ -34,7 +34,7 @@ class ChallengeBasicService:
             raise HTTPException(status_code=400, detail="이미 참여 중인 챌린지가 있어 새로운 챌린지를 생성할 수 없습니다.")
         
         # 3. 챌린지 종료일 계산
-        end_date = (current_date + timedelta(days=6)).date()
+        end_date = (current_date + timedelta(days=6))
 
         # 4. 새로운 챌린지 생성
         new_challenge = Challenge(
