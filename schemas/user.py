@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from pydantic import EmailStr
-import re
+from schemas.validator import validate_password
 
 class UserCreate(BaseModel):
     name: str
@@ -20,16 +20,17 @@ class UserCreate(BaseModel):
     @field_validator('password')
     @classmethod
     def validate_password(cls, v: str) -> str:
-        if len(v) < 8:
-            raise ValueError('비밀번호는 8자 이상으로 입력해 주세요.')
-        if not re.search(r'[A-Za-z]', v):
-            raise ValueError('영어가 최소 1개 포함되어야 합니다.')
-        if not re.search(r'\d', v):
-            raise ValueError('숫자가 최소 1개 포함되어야 합니다.')
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
-            raise ValueError('특수문자가 최소 1개 포함되어야 합니다.')
-        return v
+        return validate_password(v)
 
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class PasswordUpdate(BaseModel):
+    current_password: str
+    new_password: str
+
+    @field_validator('new_password')
+    @classmethod
+    def validate_new_password(cls, v: str) -> str:
+        return validate_password(v)
