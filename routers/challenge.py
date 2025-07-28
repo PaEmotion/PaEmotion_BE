@@ -14,14 +14,18 @@ from auth.jwt_token import get_current_user
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
 # 챌린지 생성 라우터
+# 챌린지 생성 라우터
 @router.post("/create", status_code=201)
 def create_challenge(
     challenge_data: ChallengeCreate,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user) 
 ):
-    ChallengeBasicService.create_challenge(db, current_user.userId, challenge_data)
-    return {"message": "챌린지를 성공적으로 생성했습니다."}
+    challenge_id = ChallengeBasicService.create_challenge(db, current_user.userId, challenge_data)
+    return {
+        "message": "챌린지를 성공적으로 생성했습니다.",
+        "challengeId": challenge_id
+    }
 
 # 챌린지 참여 라우터
 @router.post("/join", status_code=200)
@@ -30,8 +34,25 @@ def join_challenge(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    ChallengeBasicService.join_challenge(db, current_user.userId, join_data)
-    return {"message": "챌린지에 성공적으로 참여했습니다."}
+    challenge_id = ChallengeBasicService.join_challenge(db, current_user.userId, join_data)
+    return {
+        "message": "챌린지에 성공적으로 참여했습니다.",
+        "challengeId": challenge_id
+    }
+
+
+# 챌린지 참여 라우터
+@router.post("/join", status_code=200)
+def join_challenge(
+    join_data: ChallengeJoin,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    challenge_id = ChallengeBasicService.join_challenge(db, current_user.userId, join_data)
+    return {
+        "message": "챌린지에 성공적으로 참여했습니다.",
+        "challengeId": challenge_id
+    }
 
 # 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])
