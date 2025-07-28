@@ -38,12 +38,12 @@ class ChallengeListRead(BaseModel):
     challengeType: bool
     publicityType: bool
     endDate: date
+    goalCount: int
     participantCount: int
     class Config: orm_mode = True
 
 # 챌린지 단건 조회 스키마
 class ChallengeRead(ChallengeListRead):
-    isParticipating: Optional[bool] = False  
     class Config: orm_mode = True
 
 # 챌린지 검색 스키마
