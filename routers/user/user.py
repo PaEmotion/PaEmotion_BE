@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from schemas.user import UserCreate, UserLogin
+from schemas.user import UserCreate, UserLogin, PasswordUpdate
 from services.user.userService import UserService
 from db.session import get_db
 from models import User
@@ -33,3 +33,11 @@ def myinfo(current_user : User = Depends(get_current_user)):
         "name" : current_user.name,
         "nickname" : current_user.nickname
     }
+
+@router.put("/password")
+def update_password(
+    request: PasswordUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return UserService.update_password(current_user.userId, request, db)
