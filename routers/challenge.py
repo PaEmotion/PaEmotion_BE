@@ -14,7 +14,6 @@ from auth.jwt_token import get_current_user
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
 # 챌린지 생성 라우터
-# 챌린지 생성 라우터
 @router.post("/create", status_code=201)
 def create_challenge(
     challenge_data: ChallengeCreate,
@@ -39,7 +38,6 @@ def join_challenge(
         "message": "챌린지에 성공적으로 참여했습니다.",
         "challengeId": challenge_id
     }
-
 
 # 챌린지 참여 라우터
 @router.post("/join", status_code=200)
