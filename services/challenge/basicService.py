@@ -57,6 +57,9 @@ class ChallengeBasicService:
         # 6. DB 반영
         db.commit()
 
+        #7. 챌린지 아이디 반환
+        return new_challenge.challengeId 
+
     ## 챌린지 참여 함수 ##
     @staticmethod
     def join_challenge(db: Session, user_id: int, challenge_data: ChallengeJoin):
@@ -108,3 +111,6 @@ class ChallengeBasicService:
         )
         db.add(participant)
         db.commit()
+
+        #8. 챌린지 아이디 반환
+        return challenge.challengeId 
