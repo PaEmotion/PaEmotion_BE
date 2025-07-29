@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Boolean, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, BigInteger, Boolean, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from db.base import Base
@@ -12,7 +12,7 @@ class Challenge(Base):
     password = Column(String(255), nullable=True)  
     challengeType = Column(Boolean, nullable=False)  
     goalCount = Column(Integer, nullable=False)  
-    createdDate = Column(Date, server_default=func.current_date())  
+    createdDate = Column(DateTime, server_default=func.now())    
     
     participants = relationship("ChallengeParticipant", back_populates="challenge")
 
