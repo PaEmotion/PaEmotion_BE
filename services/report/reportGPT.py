@@ -1,5 +1,5 @@
 from openai import OpenAI
-import os
+from auth.dependencies import OPENAI_API_KEY
 from dotenv import load_dotenv
 from typing import Optional
 
@@ -66,13 +66,12 @@ def report_prompt(period: str, data: str, tone: str,spend_type: str="",  budget_
     return prompts.get(period, prompts["monthly"]) # 기본값이 daily, 사실 바뀜
 
 import logging
-import os
 from openai import OpenAI
 from typing import Literal
 
 
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = OPENAI_API_KEY
 
 client = OpenAI(api_key=api_key)
 

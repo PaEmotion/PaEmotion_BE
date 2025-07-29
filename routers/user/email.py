@@ -6,14 +6,11 @@ from db.session import get_db
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-import os, redis
+from auth.dependencies import EMAIL_TOKEN_EXPIRE_MINUTES, redis_client
 
 templates = Jinja2Templates(directory="templates")
 
 router = APIRouter()
-
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-EMAIL_TOKEN_EXPIRE_MINUTES = int(os.environ.get("EMAIL_TOKEN_EXPIRE_MINUTES"))
 
 def save_email_verification_token(email: str, token: str, expire_seconds: int = 3600):
     redis_client.set(token, email, ex=expire_seconds)
