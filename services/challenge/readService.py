@@ -14,7 +14,7 @@ class ChallengeReadService:
     def read_challenges_list(db: Session) -> List[ChallengeListRead]:
 
         # 1. 현재 날짜 조회
-        current_date = datetime.now().date()
+        current_date = datetime.now()
 
         # 2. 모든 챌린지 정보 + 해당 챌린지 참여자 수 조회
         results = (
@@ -31,14 +31,14 @@ class ChallengeReadService:
         challenges_list = []
         for challenge, participants_count in results:
             end_date = challenge.createdDate + timedelta(days=6)  
-            if end_date.date() >= current_date:
+            if end_date >= current_date:
                 challenges_list.append(
                     ChallengeListRead(
                         challengeId=challenge.challengeId,
                         name=challenge.name,
                         publicityType=challenge.publicityType,
                         challengeType=challenge.challengeType,
-                        endDate=end_date.date(),
+                        endDate=end_date,
                         goalCount=challenge.goalCount,
                         participantCount=participants_count,
                     )
@@ -52,14 +52,14 @@ class ChallengeReadService:
     def read_challenge(db: Session, challenge_id: int) -> ChallengeRead:
 
         # 1. 현재 날짜 조회
-        current_date = datetime.now().date()
+        current_date = datetime.now()
 
         # 2. 챌린지 유효성 검증 및 조회
         challenge = ChallengeValidateService.validate_challenge(db, challenge_id)
 
         # 3. 종료된 챌린지면 예외 반환
         end_date = challenge.createdDate + timedelta(days=6) 
-        if end_date.date() < current_date:
+        if end_date < current_date:
             raise HTTPException(status_code=400, detail="챌린지 기간이 종료되었습니다.")
 
         # 4. 참여자 수 조회
@@ -75,7 +75,7 @@ class ChallengeReadService:
             name=challenge.name,
             publicityType=challenge.publicityType,
             challengeType=challenge.challengeType,
-            endDate=end_date.date(),
+            endDate=end_date,
             goalCount=challenge.goalCount,
             participantCount=participants_count,
         )
@@ -111,7 +111,8 @@ class ChallengeReadService:
                     name=challenge.name,
                     challengeType=challenge.challengeType,
                     publicityType=challenge.publicityType,
-                    endDate=(challenge.createdDate + timedelta(days=7)).date(),
+                    endDate=(challenge.createdDate + timedelta(days=7)),
+                    goalCount = challenge.goalCount,
                     participantCount=participants_count,
                 )
             )

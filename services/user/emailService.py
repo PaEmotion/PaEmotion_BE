@@ -4,14 +4,10 @@ from sqlalchemy.orm import Session
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
-import os, redis
+from auth.dependencies import EMAIL_TOKEN_EXPIRE_MINUTES, redis_client, SMTP_USER, SMTP_PASSWORD
 
 from dotenv import load_dotenv
 load_dotenv()
-
-
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-EMAIL_TOKEN_EXPIRE_MINUTES = int(os.environ.get("EMAIL_TOKEN_EXPIRE_MINUTES"))
 
 class EmailService:
 
@@ -54,12 +50,10 @@ class EmailService:
     def send_email_smtp(to_email:str, subject:str, body: str):
         smtp_server = "smtp.naver.com"
         smtp_port = 587
-        SMTP_USER = os.environ.get("SMTP_USER")
         smtp_user = SMTP_USER
-        SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
         smtp_password = SMTP_PASSWORD
         
-        print("📧 Loaded SMTP_USER:", os.getenv("SMTP_USER"))
+        print("📧 Loaded SMTP_USER:", SMTP_USER)
 
         msg = MIMEMultipart()
         msg["From"] = smtp_user

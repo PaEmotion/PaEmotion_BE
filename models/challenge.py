@@ -12,7 +12,7 @@ class Challenge(Base):
     password = Column(String(255), nullable=True)  
     challengeType = Column(Boolean, nullable=False)  
     goalCount = Column(Integer, nullable=False)  
-    createdDate = Column(DateTime(timezone=False), server_default=func.now())  
+    createdDate = Column(DateTime, server_default=func.now())    
     
     participants = relationship("ChallengeParticipant", back_populates="challenge")
 

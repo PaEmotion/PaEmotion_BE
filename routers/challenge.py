@@ -39,18 +39,6 @@ def join_challenge(
         "challengeId": challenge_id
     }
 
-# 챌린지 참여 라우터
-@router.post("/join", status_code=200)
-def join_challenge(
-    join_data: ChallengeJoin,
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
-):
-    challenge_id = ChallengeBasicService.join_challenge(db, current_user.userId, join_data)
-    return {
-        "message": "챌린지에 성공적으로 참여했습니다.",
-        "challengeId": challenge_id
-    }
 
 # 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])

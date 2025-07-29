@@ -14,7 +14,7 @@ class ChallengeBasicService:
     def create_challenge(db: Session, user_id: int, challenge_data: ChallengeCreate):
 
         # 1. 현재 날짜 조회
-        current_date = datetime.now().date()
+        current_date = datetime.now()
 
         # 2. 현재 참여 중인 챌린지가 있는지 확인
         already_participation = (
@@ -65,7 +65,7 @@ class ChallengeBasicService:
     def join_challenge(db: Session, user_id: int, challenge_data: ChallengeJoin):
 
         # 1. 현재 날짜 조회
-        current_date = datetime.now().date()
+        current_date = datetime.now()
 
         # 2. 동일 챌린지에 이미 참여했는지 확인
         already_joined = db.query(ChallengeParticipant).filter_by(

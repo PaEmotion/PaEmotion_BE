@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
-from datetime import date
+from datetime import datetime
 from schemas.validator import validate_password
 
 # 챌린지 생성 스키마
@@ -29,7 +29,7 @@ class ChallengeListRead(BaseModel):
     name: str
     challengeType: bool
     publicityType: bool
-    endDate: date
+    endDate: datetime
     goalCount: int
     participantCount: int
     class Config: orm_mode = True
@@ -69,7 +69,7 @@ class ChallengeDetailRead(BaseModel):
     name: str
     publicityType: bool
     challengeType: bool
-    endDate: date
+    endDate: datetime
     goalCount: int
     guineaFeedCurrent: int
     teamProgressRate: float 
