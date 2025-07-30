@@ -39,7 +39,6 @@ def join_challenge(
         "challengeId": challenge_id
     }
 
-
 # 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])
 def search_challenge(
@@ -54,6 +53,14 @@ def search_challenge(
             status_code=200
         )
     return result
+
+# 현재 참여중인 챌린지 아이디 조회 라우터
+@router.get("/current", response_model=int)
+def get_my_current_challenge(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return ChallengeReadService.read_current_challenge(db, current_user.userId)
 
 # 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
