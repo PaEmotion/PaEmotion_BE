@@ -23,6 +23,10 @@ class ChallengeJoin(BaseModel):
     challengeId: int
     password: Optional[str] = None
 
+# 현재 참여중인 챌린지 아이디 조회 스키마
+class ChallengeIdRead(BaseModel):
+    challengeId: int
+
 # 챌린지 리스트 조회 스키마
 class ChallengeListRead(BaseModel):
     challengeId: int
