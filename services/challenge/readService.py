@@ -47,6 +47,7 @@ class ChallengeReadService:
         # 4. 결과 반환 
         return challenges_list
 
+
     ##  챌린지 단건 조회 함수 ##
     @staticmethod
     def read_challenge(db: Session, challenge_id: int) -> ChallengeRead:
@@ -79,6 +80,7 @@ class ChallengeReadService:
             goalCount=challenge.goalCount,
             participantCount=participants_count,
         )
+
 
     ## 챌린지 검색 함수 ##
     @staticmethod
@@ -119,3 +121,28 @@ class ChallengeReadService:
 
         # 4. 결과 반환
         return challenges_list
+
+
+    ## 현재 참여중인 챌린지 아이디 조회 함수 ##
+    @staticmethod
+    def read_current_challenge(db: Session, user_id: int) -> int:
+        current_date = datetime.now()
+
+        # 1. 현재 참여 중인 챌린지 조회 (기간 내)
+        participant = (
+            db.query(ChallengeParticipant)
+            .join(Challenge)
+            .filter(
+                ChallengeParticipant.userId == user_id,
+                Challenge.createdDate <= current_date,
+                Challenge.createdDate + timedelta(days=6) >= current_date,
+            )
+            .first()
+        )
+
+        # 2. 현재 참여중인 챌린지가 없을 경우
+        if not participant:
+            raise HTTPException(status_code=404, detail="현재 참여 중인 챌린지가 없습니다.")
+
+        # 3. 결과 반환
+        return participant.challengeId

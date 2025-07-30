@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 
 from db.session import get_db
-from schemas.challenge import (ChallengeCreate, ChallengeJoin, ChallengeListRead, 
-    ChallengeRead, ChallengeDetailRead)
+from schemas.challenge import (ChallengeCreate, ChallengeJoin, ChallengeIdRead, 
+    ChallengeListRead, ChallengeRead, ChallengeDetailRead)
 from services.challenge.basicService import ChallengeBasicService
 from services.challenge.readService import ChallengeReadService
 from services.challenge.detailService import ChallengeDetailService
@@ -39,7 +39,6 @@ def join_challenge(
         "challengeId": challenge_id
     }
 
-
 # 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])
 def search_challenge(
@@ -54,6 +53,15 @@ def search_challenge(
             status_code=200
         )
     return result
+
+# 현재 참여중인 챌린지 아이디 조회 라우터
+@router.get("/current", response_model=ChallengeIdRead)
+def read_current_challenge(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    challenge_id = ChallengeReadService.read_current_challenge(db, current_user.userId)
+    return {"challengeId": challenge_id}
 
 # 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
