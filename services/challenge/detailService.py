@@ -30,7 +30,7 @@ class ChallengeDetailService:
             name=challenge.name,
             publicityType=challenge.publicityType,
             challengeType=challenge.challengeType,
-            endDate=(challenge.createdDate + timedelta(days=6)).date(),
+            endDate=(challenge.createdDate + timedelta(days=6)),
             goalCount=challenge.goalCount,
             guineaFeedCurrent=team_progress.guineaFeedCount,
             teamProgressRate=team_progress.teamProgressRate,
