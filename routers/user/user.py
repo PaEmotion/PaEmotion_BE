@@ -4,7 +4,7 @@ from schemas.user import UserCreate, UserLogin, PasswordUpdate, PasswordReset
 from services.user.userService import UserService
 from db.session import get_db
 from models import User
-from auth.email_token import verify_email_token
+from auth.email_token import verify_email_token, delete_token
 from auth.jwt_token import get_current_user, create_access_token
 from auth.dependencies import redis_client, SECRET_KEY, ALGORITHM
 
@@ -60,4 +60,8 @@ def reset_password(data: PasswordReset, db: Session = Depends(get_db)):
     email = verify_email_token(data.token)
     if email is None:
         raise HTTPException(status_code=400, detail="유효하지 않은 토큰입니다.")
-    return UserService.reset_password(email=email, new_password=data.new_password, db=db)
+    
+    UserService.reset_password(email=email, new_password=data.new_password, db=db)
+    delete_token(data.token)
+
+    return {"message": "비밀번호가 성공적으로 변경되었습니다."}

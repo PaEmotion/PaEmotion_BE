@@ -55,6 +55,5 @@ def verify_password_reset_email(token:str, request: Request, db:Session=Depends(
         return templates.TemplateResponse("verify_reset_fail.html", {"request": request})
     
     redis_client.set(f"verified:{email}", "true", ex=3600)  
-    delete_token(token)
     
     return templates.TemplateResponse("verify_reset_success.html", {"request": request})
