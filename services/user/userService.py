@@ -104,3 +104,15 @@ class UserService:
         
         new_access_token = create_access_token(data={"sub":str(userId)})
         return {"access_token":new_access_token, "token_type":"bearer"}
+    
+    @staticmethod
+    def reset_password(email: str, new_password: str, db:Session):
+        existing_user = db.query(User).filter(User.email == email).first()
+        if not existing_user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        
+        hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
+        existing_user.password = hashed_password
+        db.commit()
+
+        return {"message" : "성공적으로 비밀번호가 재설정 되었습니다."}
