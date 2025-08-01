@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     SMTP_USER :str
     SMTP_PASSWORD : str
     OPENAI_API_KEY : str
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES : int
 
     class Config:
         env_file = ".env"
