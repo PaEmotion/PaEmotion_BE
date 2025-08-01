@@ -23,7 +23,7 @@ class UserCreate(BaseModel):
         return validate_password(v)
 
 class UserLogin(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 class PasswordUpdate(BaseModel):
@@ -33,4 +33,12 @@ class PasswordUpdate(BaseModel):
     @field_validator('new_password')
     @classmethod
     def validate_new_password(cls, v: str) -> str:
+        return validate_password(v)
+    
+class PasswordReset(BaseModel):
+    token: str
+    new_password : str
+
+    @field_validator('new_password')
+    def validate_password(cls, v):
         return validate_password(v)
