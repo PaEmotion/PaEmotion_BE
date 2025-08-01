@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from schemas.emailRequestSchema import EmailRequestSchema
 from services.user.emailService import EmailService
 from db.session import get_db
+from auth.email_token import verify_email_token, delete_token
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -11,15 +12,6 @@ from auth.dependencies import EMAIL_TOKEN_EXPIRE_MINUTES, redis_client
 templates = Jinja2Templates(directory="templates")
 
 router = APIRouter()
-
-def save_email_verification_token(email: str, token: str, expire_seconds: int = 3600):
-    redis_client.set(token, email, ex=expire_seconds)
-
-def verify_email_token(token: str) -> str | None:
-    return redis_client.get(token)
-
-def delete_token(token: str):
-    redis_client.delete(token)
 
 # 1번 - 사용자가 이메일 인증을 요청할 때 호출
 @router.post("/request-email-verification")
@@ -38,9 +30,31 @@ def verify_email(token:str, request :Request, db:Session = Depends(get_db)):
     email = verify_email_token(token)
 
     if email is None:
-        return templates.TemplateResponse("verify_fail.html", {"request": request})
+        return templates.TemplateResponse("verify_signup_fail.html", {"request": request})
     
     redis_client.set(f"verified:{email}", "true", ex=3600)  
     delete_token(token)
 
-    return templates.TemplateResponse("verify_success.html", {"request": request})
+    return templates.TemplateResponse("verify_signup_success.html", {"request": request})
+
+@router.post("/request-password-reset")
+async def request_password_reset(data: EmailRequestSchema, db: Session = Depends(get_db)):
+    try:
+        token = await EmailService.send_password_reset_email(data.email, db) 
+        return {"message": "비밀번호 재설정 이메일이 전송되었습니다."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="비밀번호 재설정 이메일 전송중 오류가 발생했습니다.")
+
+@router.get("/verify-password-reset-email")
+def verify_password_reset_email(token:str, request: Request, db:Session=Depends(get_db)):
+    email =  verify_email_token(token)
+
+    if email is None:
+        return templates.TemplateResponse("verify_reset_fail.html", {"request": request})
+    
+    redis_client.set(f"verified:{email}", "true", ex=3600)  
+    delete_token(token)
+    
+    return templates.TemplateResponse("verify_reset_success.html", {"request": request})
