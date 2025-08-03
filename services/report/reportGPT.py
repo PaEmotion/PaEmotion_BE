@@ -1,16 +1,11 @@
 from openai import OpenAI
 from auth.dependencies import OPENAI_API_KEY
 from dotenv import load_dotenv
-from typing import Optional
+from typing import Optional, Literal
 
 load_dotenv()
 
-
-
 def report_prompt(period: str, data: str, tone: str,spend_type: str="",  budget_prediction: Optional[float] = None) -> str:
-    # period = weekly, monthly 텍스트
-    # data = 소비 기록
-    # tone = 어조
 
     # 소비 유형 설명
     type_descriptions = {
@@ -62,18 +57,10 @@ def report_prompt(period: str, data: str, tone: str,spend_type: str="",  budget_
     """
     }
 
-
     return prompts.get(period, prompts["monthly"]) # 기본값이 daily, 사실 바뀜
 
-import logging
-from openai import OpenAI
-from typing import Literal
 
-
-
-api_key = OPENAI_API_KEY
-
-client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_report(period: Literal["daily", "weekly", "monthly"], data: str, tone: str, spend_type: str ="", budget_prediction=None) -> str:
     prompt_text = report_prompt(period, data, tone, spend_type, budget_prediction)

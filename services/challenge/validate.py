@@ -3,7 +3,6 @@ from fastapi import HTTPException
 
 from models.challenge import Challenge
 
-## 챌린지 존재 검증 함수 ##
 class ChallengeValidateService:
 
     @staticmethod

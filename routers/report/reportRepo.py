@@ -9,21 +9,19 @@ from db.session import get_db
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
-# 리포트 단건 조회 라우터 (URL에서 리포트 아이디 받음)
 @router.get("/{reportId}", response_model=ReportRead)
-def reports_read(
+def read_report(
     reportId: int = Path(...),
     db: Session = Depends(get_db)
 ):
     try:
-        report = ReportService.reports_read(db=db, report_id=reportId)
+        report = ReportService.read_report(db=db, report_id=reportId)
         return report
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-# 리포트 목록 조회 라우터 (유저 아이디, 기간 또는 날짜를 쿼리파라미터로 받음)
 @router.get("", response_model=List[ReportRead])
-def reports_readbylist(
+def readbylist_reports(
     userId: Optional[int] = Query(None),
     reportDate: Optional[date] = Query(None),
     startDate: Optional[date] = Query(None),
@@ -37,7 +35,7 @@ def reports_readbylist(
     if (startDate and not endDate) or (endDate and not startDate):
         raise HTTPException(status_code=400, detail="startDate와 endDate는 함께 입력해야 합니다.")
 
-    return ReportService.reports_readbylist(
+    return ReportService.readbylist_reports(
         db=db,
         user_id=userId,
         report_date=reportDate,

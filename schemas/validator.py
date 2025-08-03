@@ -1,4 +1,3 @@
-
 import re
 
 def validate_password(v: str) -> str:

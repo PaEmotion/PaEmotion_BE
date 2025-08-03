@@ -6,9 +6,9 @@ from typing import List, Dict, Any
 from db.session import get_db
 from schemas.challenge import (ChallengeCreate, ChallengeJoin, ChallengeIdRead, 
     ChallengeListRead, ChallengeRead, ChallengeDetailRead)
-from services.challenge.basicService import ChallengeBasicService
-from services.challenge.readService import ChallengeReadService
-from services.challenge.detailService import ChallengeDetailService
+from services.challenge.basic import ChallengeBasicService
+from services.challenge.read import ChallengeReadService
+from services.challenge.detail import ChallengeDetailService
 from auth.jwt_token import get_current_user 
 
 router = APIRouter(prefix="/challenges", tags=["challenges"])

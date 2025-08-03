@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.metrics import mean_absolute_error
-from ai.budgetUtils import full_preprocess
+from ai.budget.utils import full_preprocess
 
 def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_window=3):
 

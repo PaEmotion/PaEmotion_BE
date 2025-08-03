@@ -6,9 +6,8 @@ from models.record import Record
 from models.budget import TotalBudget, CategoryBudget
 import pandas as pd
 
-
 # 예산 예측 모델 데이터 로드 함수, DataFrame 형태로 반환
-def budget_data_read(db: Session, userId: int) -> pd.DataFrame:
+def read_budget_data(db: Session, userId: int) -> pd.DataFrame:
     now = datetime.now()
     start_date = now - timedelta(weeks=8)
 
@@ -35,7 +34,7 @@ def budget_data_read(db: Session, userId: int) -> pd.DataFrame:
     return df
 
 # 타입 분류 모델 데이터 로드 함수, DataFrame 형태로 반환
-def type_data_read(db: Session, user_id: int, spend_date: Optional[str] = None) -> pd.DataFrame:
+def read_type_data(db: Session, user_id: int, spend_date: Optional[str] = None) -> pd.DataFrame:
     # 1) 기본 소비 기록 + emotionCategoryId 가져오기
     query = db.query(
         Record.userId,

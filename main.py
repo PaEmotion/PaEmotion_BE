@@ -6,13 +6,13 @@ load_dotenv()
 from fastapi import FastAPI
 from routers.user.user import router as user_router 
 from routers.user.email import router as email_router
-from routers.record import router as record_router
+from routers.record.record import router as record_router
 from routers.report.reportRepo import router as report_router
 from routers.ml.budget import router as ml_budget_router
 from routers.ml.type import router as type_router
 from routers.report.reportGPT import router as reportGPT_router
-from routers.budget import router as budget_router
-from routers.challenge import router as challenge_router
+from routers.budget.budget import router as budget_router
+from routers.challenge.challenge import router as challenge_router
 
 app = FastAPI()
 

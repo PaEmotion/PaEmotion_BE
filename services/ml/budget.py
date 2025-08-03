@@ -1,14 +1,9 @@
-from services.ml.data import budget_data_read
-from ai.budgetPrediction import budget_predict
-import joblib
+from services.ml.data import read_budget_data
+from ai.budget.prediction import budget_predict
 from sqlalchemy.orm import Session
-from typing import Optional
-
-
 
 def training_and_prediction (db: Session, userId: int):
-    # 1. 데이터 조회하기
-    df = budget_data_read(db, userId)
+    df = read_budget_data(db, userId)
     if df.empty:
         print("⚠️ 조회된 데이터가 없습니다.")
         return []

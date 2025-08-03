@@ -1,9 +1,8 @@
-from schemas.user import UserCreate, UserLogin, PasswordUpdate, NicknameUpdate
+from schemas.user import UserSignup, UserLogin
 from models.user import User
-from db.session import get_db
 from sqlalchemy.orm import Session
 from auth.jwt_token import create_access_token, create_refresh_token
-import hashlib, redis
+import hashlib
 from fastapi import HTTPException
 from jose import jwt, JWTError
 from fastapi import HTTPException, status
@@ -11,8 +10,8 @@ from auth.dependencies import REFRESH_TOKEN_EXPIRE_DAYS, redis_client
 
 class UserService:
     @staticmethod
-    async def create_user(user: UserCreate, db: Session) -> dict:
-        # 이미 존재하는 이메일 확인
+    async def signup(user: UserSignup, db: Session) -> dict:
+
         existing_user = db.query(User).filter(User.email == user.email).first()
         if existing_user:
             raise ValueError("이미 존재하는 이메일입니다.")
@@ -32,7 +31,6 @@ class UserService:
             password=hashed_password
         )
 
-        # DB에 저장
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -45,7 +43,7 @@ class UserService:
     
     @staticmethod
     async def login(user: UserLogin, db:Session) -> dict:
-        # 존재하는 이메일인지 확인
+
         existing_user = db.query(User).filter(User.email == user.email).first()
         if not existing_user:
             raise ValueError("존재하지 않는 회원입니다.")
@@ -71,24 +69,6 @@ class UserService:
             "refresh_token": refresh_token,
             "token_type": "bearer"
         }
-
-    @staticmethod
-    def update_password(userId: int, request: PasswordUpdate, db:Session):
-        user = db.query(User).filter(User.userId == userId).first()
-
-        if not user:
-            raise HTTPException(status_code = 404, detail="유저를 찾을 수 없습니다.")
-
-        hashed_current_password = hashlib.sha256(request.current_password.encode()).hexdigest()
-
-        if user.password != hashed_current_password:
-            raise HTTPException(status_code = 400, detail = "현재 비밀번호가 일치하지 않습니다.")
-
-        hashed_new_password = hashlib.sha256(request.new_password.encode()).hexdigest()
-        user.password = hashed_new_password
-        db.commit()
-        
-        return {"message" : "성공적으로 비밀번호가 변경되었습니다."}
     
     @staticmethod
     def refresh_access_token(refresh_token: str, redis_client, secret_key, algorithm, create_access_token):
@@ -104,26 +84,3 @@ class UserService:
         
         new_access_token = create_access_token(data={"sub":str(userId)})
         return {"access_token":new_access_token, "token_type":"bearer"}
-    
-    @staticmethod
-    def reset_password(email: str, new_password: str, db:Session):
-        existing_user = db.query(User).filter(User.email == email).first()
-        if not existing_user:
-            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
-        
-        hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
-        existing_user.password = hashed_password
-        db.commit()
-
-        return {"message" : "성공적으로 비밀번호가 재설정 되었습니다."}
-    
-    @staticmethod
-    def update_nickname(userId: int, request: NicknameUpdate, db:Session):
-        user = db.query(User).filter(User.userId == userId).first()
-        if not user:
-            raise Exception("User not found")
-        
-        user.nickname = request.new_nickname
-        db.commit()
-        db.refresh(user)
-        return {"message" : "닉네임이 변경되었습니다."}

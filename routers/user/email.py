@@ -1,13 +1,13 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from schemas.emailRequestSchema import EmailRequestSchema
-from services.user.emailService import EmailService
+from schemas.email import Email
+from services.user.email import EmailService
 from db.session import get_db
 from auth.email_token import verify_email_token, delete_token
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from auth.dependencies import EMAIL_TOKEN_EXPIRE_MINUTES, redis_client
+from auth.dependencies import redis_client
 
 templates = Jinja2Templates(directory="templates")
 
@@ -15,7 +15,7 @@ router = APIRouter()
 
 # 1번 - 사용자가 이메일 인증을 요청할 때 호출
 @router.post("/request-email-verification")
-async def request_email_verification(data: EmailRequestSchema, db: Session = Depends(get_db)):
+async def request_email_verification(data: Email, db: Session = Depends(get_db)):
     try:
         token = await EmailService.send_verification_email(data.email, db) # 이메일 서비스를 불러옴
         return {"message": "인증 이메일이 전송되었습니다."}
@@ -38,7 +38,7 @@ def verify_email(token:str, request :Request, db:Session = Depends(get_db)):
     return templates.TemplateResponse("verify_signup_success.html", {"request": request})
 
 @router.post("/request-password-reset")
-async def request_password_reset(data: EmailRequestSchema, db: Session = Depends(get_db)):
+async def request_password_reset(data: Email, db: Session = Depends(get_db)):
     try:
         token = await EmailService.send_password_reset_email(data.email, db) 
         return {"message": "비밀번호 재설정 이메일이 전송되었습니다."}
