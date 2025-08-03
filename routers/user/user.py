@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Body
 from sqlalchemy.orm import Session
-from schemas.user import UserCreate, UserLogin, PasswordUpdate, PasswordReset
+from schemas.user import UserCreate, UserLogin, PasswordUpdate, PasswordReset, NicknameUpdate
 from services.user.userService import UserService
 from db.session import get_db
 from models import User
@@ -65,3 +65,15 @@ def reset_password(data: PasswordReset, db: Session = Depends(get_db)):
     delete_token(data.token)
 
     return {"message": "비밀번호가 성공적으로 변경되었습니다."}
+
+@router.put("/nickname")
+def update_nickname(
+    request: NicknameUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    try:
+        result = UserService.update_nickname(current_user.userId, request, db)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
