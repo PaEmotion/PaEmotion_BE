@@ -11,6 +11,7 @@ from models import User
 
 router = APIRouter(prefix="/records", tags=["records"])
 
+
 @router.post("/create", response_model=RecordsRead)
 def create_records(
     record: RecordsCreate,
