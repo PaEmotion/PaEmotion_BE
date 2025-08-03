@@ -1,8 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head><title>인증 성공</title></head>
+<head>
+  <meta charset="utf-8" />
+  <title>비밀번호 재설정</title>
+</head>
 <body>
-  <h1>🎉 비밀번호 재설정 인증이 완료되었습니다!</h1>
-  <p>이제 앱에서 비밀번호 재설정을 계속 진행해 주세요.</p>
+  <p>앱으로 이동 중입니다. 시간이 지나도 넘어가지 않는다면 아래 버튼을 눌러 수동으로 복사하세요.</p>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    function copyToken() {
+      if (!token) return alert('복사할 토큰이 없습니다.');
+      navigator.clipboard.writeText(token).then(() => {
+        alert('토큰이 복사되었습니다. 앱의 재설정 화면에 붙여넣으세요.');
+      }).catch(() => {
+        alert('복사에 실패했습니다. 직접 선택해서 복사하세요.');
+      });
+    }
+
+    if (token) {
+      // 앱으로 연결 시도
+      window.location = `paemotion://reset-password?token=${encodeURIComponent(token)}`;
+
+    } else {
+      document.body.innerHTML = '<p>유효한 토큰이 없습니다.</p>';
+    }
+  </script>
 </body>
 </html>
