@@ -5,7 +5,7 @@ from services.report.reportGPT import generate_report
 from services.report.reportRepo import ReportService
 from services.ml.type import classify_type
 from services.ml.budget import training_and_prediction
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from models.record import Record
 
 async def scheduled_report(userId: int, request: ReportRequest):
@@ -55,7 +55,7 @@ async def scheduled_report(userId: int, request: ReportRequest):
             budget_prediction=budget_prediction
         )
 
-        ReportService.reports_save(
+        ReportService.save_report(
             db=db,
             userId=userId,
             reportDate=request.reportDate,
