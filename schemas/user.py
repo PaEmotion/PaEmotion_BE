@@ -42,3 +42,6 @@ class PasswordReset(BaseModel):
     @field_validator('new_password')
     def validate_password(cls, v):
         return validate_password(v)
+    
+class NicknameUpdate(BaseModel):
+    new_nickname: str
