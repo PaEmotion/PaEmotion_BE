@@ -1,4 +1,4 @@
 from pydantic import BaseModel, EmailStr
 
-class EmailRequestSchema(BaseModel):
+class Email(BaseModel):
     email: EmailStr
