@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head><title>인증 성공</title></head>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>이메일 인증 완료</title>
+  <script>
+    // 3초 후 딥링크로 앱 자동 이동 시도
+    setTimeout(() => {
+      window.location.href = "paemotion://verify-email-success";
+    }, 3000);
+  </script>
+</head>
 <body>
-  <h1>🎉 이메일 인증이 완료되었습니다!</h1>
-  <p>이제 앱에서 회원가입을 계속 진행해 주세요.</p>
+  <h1>이메일 인증이 완료되었습니다.</h1>
+  <p>잠시 후 앱으로 돌아갑니다.</p>
 </body>
 </html>
