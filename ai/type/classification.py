@@ -1,6 +1,6 @@
 import joblib
 from sklearn.metrics import classification_report, accuracy_score
-from ai.typeUtils import type_process
+from ai.type.utils import type_process
 import numpy as np
 
 def classification_type(test_df, year, month, model_path='ai/type.pkl'):
