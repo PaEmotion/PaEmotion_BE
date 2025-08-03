@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator
 from pydantic import EmailStr
 from schemas.validator import validate_password
 
-class UserCreate(BaseModel):
+class UserSignup(BaseModel):
     name: str
     nickname: str
     password: str

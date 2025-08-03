@@ -8,14 +8,12 @@ class ReportTypeEnum(str, PyEnum):
     weekly = "weekly"
     monthly = "monthly"
 
-# 리포트 저장 스키마
 class reportSave(BaseModel):
     reportDate: date
     reportType: ReportTypeEnum
     reportText: str
     spendType: Optional[str] = ""
 
-# 리포트 조회 스키마
 class ReportRead(reportSave):
     reportId: int
     userId: int

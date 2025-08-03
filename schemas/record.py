@@ -1,9 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
-
-# 소비내역 생성 스키마
 class RecordsCreate(BaseModel):
     userId: int
     emotionCategoryId: int
@@ -12,12 +10,10 @@ class RecordsCreate(BaseModel):
     spendCost: int
     spendDate: datetime
 
-# 소비내역 조회 스키마
 class RecordsRead(RecordsCreate):
     spendId: int 
     class Config: from_attributes = True
 
-# 소비내역 수정 스키마
 class RecordsEdit(BaseModel):
     emotionCategoryId: Optional[int] = None
     spendCategoryId: Optional[int] = None
