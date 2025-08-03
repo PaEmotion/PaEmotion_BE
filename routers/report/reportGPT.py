@@ -67,7 +67,7 @@ async def create_report(
     report = generate_report(request.period, data_str, request.tone, spend_type=consumption_type or "", budget_prediction=budget_prediction)
 
     try:
-        saved_report = ReportService.reports_save(
+        saved_report = ReportService.save_report(
             db=db,
             userId=userId,
             reportDate=request.reportDate,  

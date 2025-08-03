@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Body
 from sqlalchemy.orm import Session
-from schemas.user import UserCreate, UserLogin, PasswordUpdate, PasswordReset, NicknameUpdate
-from services.user.userService import UserService
+from schemas.user import UserSignup, UserLogin, PasswordUpdate, PasswordReset, NicknameUpdate
+from services.user.user import UserService
+from services.user.password import PasswordService
+from services.user.profile import ProfileService
 from db.session import get_db
 from models import User
 from auth.email_token import verify_email_token, delete_token
@@ -11,9 +13,9 @@ from auth.dependencies import redis_client, SECRET_KEY, ALGORITHM
 router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
-async def signup(user: UserCreate, db: Session = Depends(get_db)):
+async def signup(user: UserSignup, db: Session = Depends(get_db)):
     try:
-        created_user = await UserService.create_user(user, db)
+        created_user = await UserService.signup(user, db)
         return {
             "msg": "회원가입 성공",
             "user": created_user
@@ -42,7 +44,7 @@ def update_password(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return UserService.update_password(current_user.userId, request, db)
+    return PasswordService.update_password(current_user.userId, request, db)
 
 @router.post("/token/refresh")
 def refresh_access_token(refresh_token:str = Body(..., embed=True)):
@@ -61,7 +63,7 @@ def reset_password(data: PasswordReset, db: Session = Depends(get_db)):
     if email is None:
         raise HTTPException(status_code=400, detail="유효하지 않은 토큰입니다.")
     
-    UserService.reset_password(email=email, new_password=data.new_password, db=db)
+    PasswordService.reset_password(email=email, new_password=data.new_password, db=db)
     delete_token(data.token)
 
     return {"message": "비밀번호가 성공적으로 변경되었습니다."}
@@ -73,7 +75,7 @@ def update_nickname(
     current_user = Depends(get_current_user)
 ):
     try:
-        result = UserService.update_nickname(current_user.userId, request, db)
+        result = ProfileService.update_nickname(current_user.userId, request, db)
         return result
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
