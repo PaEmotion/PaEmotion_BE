@@ -3,7 +3,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from routers.user.user import router as user_router 
 from routers.user.email import router as email_router
 from routers.record.record import router as record_router
@@ -13,6 +13,7 @@ from routers.ml.type import router as type_router
 from routers.report.reportGPT import router as reportGPT_router
 from routers.budget.budget import router as budget_router
 from routers.challenge.challenge import router as challenge_router
+from utils.exception import custom_http_exception
 
 app = FastAPI()
 
@@ -25,6 +26,7 @@ app.include_router(type_router)
 app.include_router(reportGPT_router)
 app.include_router(budget_router)
 app.include_router(challenge_router)
+app.add_exception_handler(HTTPException, custom_http_exception)
 
 @app.get("/")
 def read_root():
