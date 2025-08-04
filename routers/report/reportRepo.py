@@ -2,8 +2,8 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
-
-from schemas.reportRepo import reportSave, ReportRead
+from utils.response import response_success
+from schemas.reportRepo import ReportRead
 from services.report.reportRepo import ReportService
 from db.session import get_db
 
@@ -16,7 +16,7 @@ def read_report(
 ):
     try:
         report = ReportService.read_report(db=db, report_id=reportId)
-        return report
+        return response_success(data=report, message="리포트 단건 조회 성공")
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -35,10 +35,12 @@ def readbylist_reports(
     if (startDate and not endDate) or (endDate and not startDate):
         raise HTTPException(status_code=400, detail="startDate와 endDate는 함께 입력해야 합니다.")
 
-    return ReportService.readbylist_reports(
+    result = ReportService.readbylist_reports(
         db=db,
         user_id=userId,
         report_date=reportDate,
         start_date=startDate,
         end_date=endDate
     )
+
+    return response_success(data = result, message = "리포트 조회 성공")

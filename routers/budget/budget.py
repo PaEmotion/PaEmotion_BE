@@ -6,6 +6,7 @@ from db.session import get_db
 from schemas.budget import (BudgetCreate, BudgetRead, LastSpentRead)
 from services.budget.budget import BudgetService
 from models.user import User
+from utils.response import response_success
 
 router = APIRouter(prefix="/budgets", tags=["budgets"])
 
@@ -15,7 +16,8 @@ def create_budgets(
     budgetData: BudgetCreate = Body(...),
     db: Session = Depends(get_db)
 ):
-    return BudgetService.create_budgets(db, current_user.userId, budgetData)
+    result = BudgetService.create_budgets(db, current_user.userId, budgetData)
+    return response_success(data=result, message="예산 생성 완료", status_code=201)
 
 @router.get("/me", response_model=BudgetRead)
 def read_budgets(
@@ -23,7 +25,8 @@ def read_budgets(
     budgetMonth: date = Query(...),
     db: Session = Depends(get_db)
 ):
-    return BudgetService.read_budgets(db, current_user.userId, budgetMonth)
+    result = BudgetService.read_budgets(db, current_user.userId, budgetMonth)
+    return response_success(data=result, message="예산 조회 완료")
 
 @router.get("/lastspent/me", response_model=LastSpentRead)
 def read_last_spent(
@@ -31,4 +34,5 @@ def read_last_spent(
     lastMonth: date = Query(...),
     db: Session = Depends(get_db)
 ):
-    return BudgetService.read_last_spent(db, current_user.userId, lastMonth)
+    result = BudgetService.read_last_spent(db, current_user.userId, lastMonth)
+    return response_success(data=result, message="지난 예산 조회 완료")
