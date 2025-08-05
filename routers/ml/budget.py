@@ -10,6 +10,10 @@ router = APIRouter(prefix="/ml")
 @router.get("/predict")
 def budgetPrediction(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     y_pred = training_and_prediction(db, current_user.userId)
+
+    if not y_pred:
+        return response_success(data={}, message="예측할 데이터가 부족합니다.")
+
     return response_success(
         data = {"예측" : y_pred},
         message = "예측"

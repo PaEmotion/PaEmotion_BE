@@ -30,11 +30,13 @@ async def request_email_verification(data: Email, db: Session = Depends(get_db))
 def verify_email(token:str, request :Request, db:Session = Depends(get_db)):
     email = verify_email_token(token)
 
+    if isinstance(email, bytes):
+        email = email.decode('utf-8')
+
     if email is None:
         return templates.TemplateResponse("verify_signup_fail.html", {"request": request})
     
     redis_client.set(f"verified:{email}", "true", ex=3600)  
-    delete_token(token)
 
     return templates.TemplateResponse("verify_signup_success.html", {"request": request})
 

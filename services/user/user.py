@@ -12,6 +12,8 @@ class UserService:
     @staticmethod
     async def signup(user: UserSignup, db: Session) -> dict:
 
+        email = user.email.decode('utf-8') if isinstance(user.email, bytes) else user.email
+
         existing_user = db.query(User).filter(User.email == user.email).first()
         if existing_user:
             raise ValueError("이미 존재하는 이메일입니다.")
