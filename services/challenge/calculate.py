@@ -14,7 +14,7 @@ class ChallengeCalculateService:
 
         end_date = challenge.createdDate.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=7)
 
-         # 감정 ID 긍정/부정 구분 필터 설정
+        # 감정 ID 긍정/부정 구분 필터 설정
         positive_emotion_ids = [1, 2, 3]
         negative_emotion_ids = [4, 5, 6, 7, 8, 9, 10, 11, 12]
         emotion_filter = Record.emotionCategoryId.in_(
