@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, func, text
 from datetime import datetime, timedelta
 from fastapi import HTTPException
 from models.challenge import Challenge, ChallengeParticipant
@@ -11,25 +11,24 @@ class ChallengeBasicService:
     @staticmethod
     def create_challenge(db: Session, user_id: int, challenge_data: ChallengeCreate):
 
-        current_date = datetime.now()
+        today_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = func.date_add(func.date(Challenge.createdDate), text('INTERVAL 7 DAY'))
 
         already_participation = (
             db.query(ChallengeParticipant)
             .filter(
                 ChallengeParticipant.userId == user_id,
                 ChallengeParticipant.challenge.has(
-                and_(
-                    Challenge.createdDate <= current_date,
-                    Challenge.createdDate + timedelta(days=6) >= current_date
+                    and_(
+                        Challenge.createdDate <= datetime.now(),
+                        end_date > today_date,  
+                    )
                 )
             )
-        )
-        .first()
+            .first()
         )
         if already_participation:
             raise HTTPException(status_code=400, detail="이미 참여 중인 챌린지가 있어 새로운 챌린지를 생성할 수 없습니다.")
-        
-        end_date = (current_date + timedelta(days=6))
 
         new_challenge = Challenge(
             name=challenge_data.name,
@@ -37,16 +36,14 @@ class ChallengeBasicService:
             password=challenge_data.password if not challenge_data.publicityType else None,
             challengeType=challenge_data.challengeType,
             goalCount=challenge_data.goalCount,
-            createdDate=current_date
+            createdDate=datetime.now()
         )
-
         db.add(new_challenge)
         db.flush()
 
         host = ChallengeParticipant(
             challengeId=new_challenge.challengeId, userId=user_id, isHost=True
         )
-
         db.add(host)
         db.commit()
 
@@ -55,7 +52,8 @@ class ChallengeBasicService:
     @staticmethod
     def join_challenge(db: Session, user_id: int, challenge_data: ChallengeJoin):
 
-        current_date = datetime.now()
+        today_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = func.date_add(func.date(Challenge.createdDate), text('INTERVAL 7 DAY'))
 
         already_joined = db.query(ChallengeParticipant).filter_by(
             userId=user_id,
@@ -70,7 +68,7 @@ class ChallengeBasicService:
             .filter(
                 ChallengeParticipant.userId == user_id,
                 Challenge.challengeId != challenge_data.challengeId,
-                (Challenge.createdDate + timedelta(days=6)) >= current_date,
+                end_date > today_date,  
             )
             .first()
         )
@@ -96,4 +94,4 @@ class ChallengeBasicService:
         db.add(participant)
         db.commit()
 
-        return challenge.challengeId 
+        return challenge.challengeId

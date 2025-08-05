@@ -8,14 +8,13 @@ from schemas.challenge import ChallengeMemberContribution, ChallengeTeamProgress
 
 class ChallengeCalculateService:
 
-
     @staticmethod
     def participants_rate(db: Session, challenge: Challenge, participants: List[ChallengeParticipant]
     ) -> List[ChallengeMemberContribution]:
 
-        end_date = challenge.createdDate + timedelta(days=6)
+        end_date = challenge.createdDate.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=7)
 
-        # 감정 ID 긍정/부정 구분 필터 설정
+         # 감정 ID 긍정/부정 구분 필터 설정
         positive_emotion_ids = [1, 2, 3]
         negative_emotion_ids = [4, 5, 6, 7, 8, 9, 10, 11, 12]
         emotion_filter = Record.emotionCategoryId.in_(
@@ -29,7 +28,7 @@ class ChallengeCalculateService:
             spend_count = db.query(Record).filter(
                 Record.userId == participant.userId,
                 Record.spendDate >= challenge.createdDate,
-                Record.spendDate <= end_date,
+                Record.spendDate < end_date,  # 마감일 미만
                 emotion_filter
             ).count()
 
@@ -44,7 +43,7 @@ class ChallengeCalculateService:
                 isHost=participant.isHost,
                 spendCount=spend_count,
                 contributionRate=round(contribution * 100, 1)
-            )   )
+            ))
 
         return result
     
@@ -70,4 +69,4 @@ class ChallengeCalculateService:
         return ChallengeTeamProgress(
             teamProgressRate=round(progress * 100, 1),
             guineaFeedCount=guinea_feed_current
-    )
+        )
