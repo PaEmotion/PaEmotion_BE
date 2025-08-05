@@ -8,5 +8,5 @@ def training_and_prediction (db: Session, userId: int):
         print("⚠️ 조회된 데이터가 없습니다.")
         return []
     
-    preds = budget_predict(df, model_path='ai/rf_model.pkl')
+    preds = budget_predict(df, model_path='ai/budget/rf_model.pkl')
     return preds.tolist() if hasattr(preds, 'tolist') else preds
