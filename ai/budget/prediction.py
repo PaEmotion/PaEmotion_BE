@@ -5,7 +5,7 @@ import joblib
 from sklearn.metrics import mean_absolute_error
 from ai.budget.utils import full_preprocess
 
-def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_window=3):
+def budget_predict(test_df=None, model_path='ai/budget/rf_model.pkl', window=8, cat_window=3):
 
     if test_df is None:
         print("⚠️ 예측할 충분한 데이터가 없습니다. 빈 리스트 반환합니다.")
@@ -15,7 +15,7 @@ def budget_predict(test_df=None, model_path='ai/rf_model.pkl', window=8, cat_win
 
     print(f"DEBUG: X_test 길이 = {len(X_test)}, y_test 길이 = {len(y_test)}")
 
-    if len(X_test) == 0:
+    if len(X_test) <8 :
         print("⚠️ 예측할 충분한 데이터가 없습니다. 조금 더 나중에 시도하십시오.")
         return []
     
