@@ -10,6 +10,7 @@ from services.challenge.basic import ChallengeBasicService
 from services.challenge.read import ChallengeReadService
 from services.challenge.detail import ChallengeDetailService
 from auth.jwt_token import get_current_user 
+from utils.response import response_success
 
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
@@ -21,10 +22,11 @@ def create_challenge(
     current_user = Depends(get_current_user) 
 ):
     challenge_id = ChallengeBasicService.create_challenge(db, current_user.userId, challenge_data)
-    return {
-        "message": "챌린지를 성공적으로 생성했습니다.",
-        "challengeId": challenge_id
-    }
+    return response_success(
+        data = {"challenge_id" : challenge_id },
+        message = "챌린지 생성 완료",
+        status_code=201
+    )
 
 # 챌린지 참여 라우터
 @router.post("/join", status_code=200)
@@ -34,10 +36,10 @@ def join_challenge(
     current_user = Depends(get_current_user)
 ):
     challenge_id = ChallengeBasicService.join_challenge(db, current_user.userId, join_data)
-    return {
-        "message": "챌린지에 성공적으로 참여했습니다.",
-        "challengeId": challenge_id
-    }
+    return response_success(
+        data = {"challenge_id" : challenge_id },
+        message = "챌린지 참여 완료"
+    )
 
 # 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])
@@ -48,11 +50,11 @@ def search_challenge(
     result = ChallengeReadService.search_challenge(db, name)
 
     if not result:
-        return JSONResponse(
-            content={"message": "검색 결과가 없습니다.", "challenges": []},
-            status_code=200
+        return response_success(
+            data = [],
+            message="검색 결과가 없습니다."
         )
-    return result
+    return response_success(data=result, message="검색 결과 반환 완료")
 
 # 현재 참여중인 챌린지 아이디 조회 라우터
 @router.get("/current", response_model=ChallengeIdRead)
@@ -61,14 +63,21 @@ def read_current_challenge(
     current_user = Depends(get_current_user)
 ):
     challenge_id = ChallengeReadService.read_current_challenge(db, current_user.userId)
-    return {"challengeId": challenge_id}
+    return response_success(
+        data = {"challenge_id" : challenge_id },
+        message = "참여중인 챌린지 조회 완료"
+    )
 
 # 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
 def read_challenges_list(
     db: Session = Depends(get_db)
 ):
-    return ChallengeReadService.read_challenges_list(db)
+    result = ChallengeReadService.read_challenges_list(db)
+    return response_success(
+        data = result,
+        message = "챌린지 목록 조회 완료"
+    )
 
 # 챌린지 단건 조회 라우터
 @router.get("/{challengeId}", response_model=ChallengeRead)
@@ -76,7 +85,11 @@ def read_challenge(
     challengeId: int,
     db: Session = Depends(get_db)
 ):
-    return ChallengeReadService.read_challenge(db, challengeId)
+    result = ChallengeReadService.read_challenge(db, challengeId)
+    return response_success(
+        data = result,
+        message = "챌린지 단건 조회 완료"
+    )
 
 # 챌린지 상세 정보 조회 라우터
 @router.get("/detail/{challengeId}", response_model=ChallengeDetailRead)
@@ -85,4 +98,8 @@ def read_challenge_detail(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return ChallengeDetailService.read_challenge_detail(db, challengeId, current_user.userId)
+    result = ChallengeDetailService.read_challenge_detail(db, challengeId, current_user.userId)
+    return response_success(
+        data = result,
+        message = "챌린지 상세 조회 완료"
+    )
