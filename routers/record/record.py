@@ -9,9 +9,7 @@ from services.record import record as record_service
 from auth.jwt_token import get_current_user
 from models import User
 
-
 router = APIRouter(prefix="/records", tags=["records"])
-
 
 @router.post("/create", response_model=RecordsRead)
 def create_records(
