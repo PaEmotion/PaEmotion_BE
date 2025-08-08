@@ -12,7 +12,7 @@ class ChallengeCalculateService:
     def participants_rate(db: Session, challenge: Challenge, participants: List[ChallengeParticipant]
     ) -> List[ChallengeMemberContribution]:
 
-        end_date = challenge.createdDate.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=7)
+        end_date = challenge.createdDate.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=7) # 마감일 설정
 
         # 감정 ID 긍정/부정 구분 필터 설정
         positive_emotion_ids = [1, 2, 3]
@@ -28,7 +28,7 @@ class ChallengeCalculateService:
             spend_count = db.query(Record).filter(
                 Record.userId == participant.userId,
                 Record.spendDate >= challenge.createdDate,
-                Record.spendDate < end_date,  # 마감일 미만
+                Record.spendDate < end_date,  
                 emotion_filter
             ).count()
 

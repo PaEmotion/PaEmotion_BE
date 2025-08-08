@@ -9,7 +9,6 @@ from schemas.challenge import ChallengeListRead, ChallengeRead
 
 class ChallengeReadService:
 
-    # 목록 조회
     @staticmethod 
     def read_challenges_list(db: Session) -> List[ChallengeListRead]:
 
@@ -47,7 +46,6 @@ class ChallengeReadService:
 
         return challenges_list
 
-    # 단건 조회
     @staticmethod
     def read_challenge(db: Session, challenge_id: int) -> ChallengeRead:
 
@@ -83,7 +81,6 @@ class ChallengeReadService:
             participantCount=participants_count,
         )
 
-    # 검색 조회
     @staticmethod
     def search_challenge(db: Session, query: str) -> List[ChallengeListRead]:
 
@@ -122,7 +119,6 @@ class ChallengeReadService:
 
         return challenges_list
 
-    # 현재 참여중인 챌린지 아이디 조회 (기간 내)
     @staticmethod
     def read_current_challenge(db: Session, user_id: int) -> int:
 
