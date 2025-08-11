@@ -15,4 +15,8 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.OPENAI_API_KEY = self.OPENAI_API_KEY.strip()
+
 settings = Settings()
