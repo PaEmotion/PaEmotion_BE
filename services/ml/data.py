@@ -7,9 +7,9 @@ from models.budget import TotalBudget, CategoryBudget
 import pandas as pd
 
 # 예산 예측 모델 데이터 로드 함수, DataFrame 형태로 반환
-def read_budget_data(db: Session, userId: int) -> pd.DataFrame:
+def read_prediction_data(db: Session, userId: int) -> pd.DataFrame:
     now = datetime.now()
-    start_date = now - timedelta(weeks=8)
+    start_date = now - timedelta(days=365)
 
     query = db.query(Record).filter(
         Record.userId == userId,
