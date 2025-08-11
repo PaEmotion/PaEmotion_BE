@@ -20,6 +20,8 @@ def read_report(
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
+from fastapi.encoders import jsonable_encoder
+
 @router.get("", response_model=List[ReportRead])
 def readbylist_reports(
     userId: Optional[int] = Query(None),
@@ -43,4 +45,7 @@ def readbylist_reports(
         end_date=endDate
     )
 
-    return response_success(data = result, message = "리포트 조회 성공")
+    # ORM 객체를 직렬화 가능한 형태로 변환
+    result_serialized = jsonable_encoder(result)
+
+    return response_success(data=result_serialized, message="리포트 조회 성공")

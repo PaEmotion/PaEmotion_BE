@@ -8,6 +8,7 @@ from services.report.reportRepo import ReportService
 from services.ml.type import classify_type
 from services.ml.budget import training_and_prediction
 from utils.response import response_success, response_error
+import numpy as np
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -22,6 +23,7 @@ async def create_report(
     gpt_data = await get_gpt_data(userId, request, db)
 
     budget_prediction = None # 기본값
+    budget_prediction_real = None # 기본값
     consumption_type = None # 기본값
 
     # 2. records -> 문자열 데이터로 포맷하기
@@ -56,9 +58,11 @@ async def create_report(
         )
 
         budget_prediction = training_and_prediction(db, userId)
-        budget_prediction = (
-            int(budget_prediction[0]) if budget_prediction else None
-        )
+        budget_prediction_real = np.exp(budget_prediction)
+        try:
+            budget_prediction_real = int(budget_prediction_real[0])
+        except (TypeError, IndexError):
+            budget_prediction_real = int(budget_prediction_real) if budget_prediction_real is not None else None
 
     existing_report = ReportService.get_existing_report(db, userId, request.reportDate, request.period)
     if existing_report:
@@ -68,7 +72,7 @@ async def create_report(
         )
     
     # 3. GPT 호출
-    report = generate_report(request.period, data_str, request.tone, spend_type=consumption_type or "", budget_prediction=budget_prediction)
+    report = generate_report(request.period, data_str, request.tone, spend_type=consumption_type or "", budget_prediction=budget_prediction_real)
 
     try:
         saved_report = ReportService.save_report(

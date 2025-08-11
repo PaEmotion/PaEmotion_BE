@@ -3,7 +3,7 @@ from sklearn.metrics import classification_report, accuracy_score
 from ai.type.utils import type_process
 import numpy as np
 
-def classification_type(test_df, year, month, model_path='ai/type/type.pkl'):
+def classification_type(test_df, year, month, model_path='ai/type/classify.pkl'):
     
     monthly_df = test_df[
         (test_df['spendDate'].dt.year == year) & (test_df['spendDate'].dt.month == month)
