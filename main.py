@@ -14,8 +14,24 @@ from routers.report.reportGPT import router as reportGPT_router
 from routers.budget.budget import router as budget_router
 from routers.challenge.challenge import router as challenge_router
 from utils.exception import custom_http_exception
+import logging
+from dotenv import load_dotenv
+load_dotenv()
+
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
+
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO, 
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(),  
+        ]
+    )
+
+setup_logging() 
 
 app.include_router(user_router)
 app.include_router(email_router)
