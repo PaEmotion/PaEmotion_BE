@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from typing import List, Dict, Any
+from typing import List
 
 from db.session import get_db
 from schemas.challenge import (ChallengeCreate, ChallengeJoin, ChallengeIdRead, 

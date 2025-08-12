@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from services.ml.type import classify_type
 from sqlalchemy.orm import Session
 from db.session import get_db
@@ -7,8 +7,6 @@ from models.user import User
 from auth.jwt_token import get_current_user
 
 router = APIRouter(prefix="/ml")
-
-# 테스트용 라우터
 
 @router.get("/classify")
 def typeClassification(
