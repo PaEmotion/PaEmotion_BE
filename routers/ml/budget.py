@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from services.ml.budget import training_and_prediction, training_and_prediction_test
+from services.ml.budget import training_and_prediction
 from sqlalchemy.orm import Session
 from db.session import get_db
 from utils.response import response_success
@@ -21,21 +21,4 @@ def budgetPrediction(current_user: User = Depends(get_current_user), db: Session
     return response_success(
         data={"예측": formatted_pred},
         message="예측 성공"
-    )
-
-@router.get("/predict/test")
-def budgetPredictionTest(current_user: User = Depends(get_current_user), db:Session = Depends(get_db)):
-    preds, mae = training_and_prediction_test(db, current_user.userId)
-
-    if not preds:
-        return response_success(data={}, message="예측할 데이터가 부족합니다.")
-
-    real_preds = expm1(preds)
-    formatted_preds = f"{round(real_preds):,}원"
-    return response_success(
-        data = {
-            "예측" : formatted_preds,
-            "평가" : mae
-            },
-        message = "예측"
     )
