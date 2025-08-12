@@ -1,4 +1,4 @@
-from schemas.user import PasswordUpdate, NicknameUpdate
+from schemas.user import PasswordUpdate
 from models.user import User
 from sqlalchemy.orm import Session
 import hashlib
