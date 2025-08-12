@@ -23,8 +23,8 @@ async def create_report(
     gpt_data = await get_gpt_data(userId, request, db)
 
     budget_prediction = None # 기본값
-    budget_prediction_real = None # 기본값
-    consumption_type = None # 기본값
+    budget_prediction_real = None 
+    consumption_type = None
 
     # 2. records -> 문자열 데이터로 포맷하기
     if not gpt_data:

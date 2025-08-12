@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from schemas.email import Email
 from services.user.email import EmailService
 from db.session import get_db
-from auth.email_token import verify_email_token, delete_token
+from auth.email_token import verify_email_token
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
