@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func, text
-from datetime import datetime, timedelta
+from datetime import datetime
 from fastapi import HTTPException
 from models.challenge import Challenge, ChallengeParticipant
 from schemas.challenge import ChallengeCreate, ChallengeJoin

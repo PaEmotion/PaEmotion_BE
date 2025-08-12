@@ -1,5 +1,3 @@
-# scheduler_runner.py
-
 import asyncio
 from scheduler import start_scheduler
 
