@@ -5,9 +5,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 from auth.dependencies import EMAIL_TOKEN_EXPIRE_MINUTES, redis_client, SMTP_USER, SMTP_PASSWORD, PASSWORD_RESET_TOKEN_EXPIRE_MINUTES
-
 from dotenv import load_dotenv
 load_dotenv()
+
+import logging
+logger = logging.getLogger(__name__)
 
 class EmailService:
     
@@ -42,7 +44,7 @@ class EmailService:
 
             return token
         except Exception as e:
-            print("🔥 이메일 인증 발송 중 오류:", str(e))
+            logger.error("🔥 이메일 인증 발송 중 오류:", str(e))
             raise
 
     # 비밀번호 재설정 이메일 폼
@@ -76,7 +78,7 @@ class EmailService:
 
             return token
         except Exception as e:
-            print("🔥 비밀번호 재설정 이메일 발송 중 오류:", str(e))
+            logger.error("🔥 비밀번호 재설정 이메일 발송 중 오류:", str(e))
             raise
     
     # 3번 - SMTP로 실제 이메일 보내는 함수
@@ -87,8 +89,6 @@ class EmailService:
         smtp_user = SMTP_USER
         smtp_password = SMTP_PASSWORD
         
-        print("📧 Loaded SMTP_USER:", SMTP_USER)
-
         msg = MIMEMultipart()
         msg["From"] = smtp_user
         msg["To"] = to_email
@@ -103,8 +103,8 @@ class EmailService:
             server.sendmail(smtp_user, to_email, msg.as_string())
             server.quit()
 
-            print (f"이메일 전송 성공 : {to_email}")
+            logger.info (f"이메일 전송 성공 : {to_email}")
         except Exception as e:
-            print(f"이메일 전송 실패 : {str(e)}")
+            logger.error(f"이메일 전송 실패 : {str(e)}")
             raise e
             

@@ -7,6 +7,8 @@ from services.ml.type import classify_type
 from services.ml.budget import training_and_prediction
 from datetime import datetime, timedelta
 from models.record import Record
+import logging
+logger = logging.getLogger(__name__)
 
 async def scheduled_report(userId: int, request: ReportRequest):
     db = SessionLocal()
@@ -14,7 +16,7 @@ async def scheduled_report(userId: int, request: ReportRequest):
         gpt_data = await get_gpt_data(userId, request, db)
 
         if not gpt_data or gpt_data['total_spend'] <= 0 or sum(gpt_data['emotion_count'].values()) == 0:
-            print("데이터 부족. 리포트 생략")
+            logger.warning("데이터 부족. 리포트 생략")
 
         if request.period == "monthly":
             data_str = format_report_data(
@@ -44,7 +46,7 @@ async def scheduled_report(userId: int, request: ReportRequest):
 
         existing_report = ReportService.get_existing_report(db, userId, request.reportDate, request.period)
         if existing_report:
-            print("이미 존재하는 리포트")
+            logger.warning("이미 존재하는 리포트")
             return
 
         report = generate_report(
@@ -64,7 +66,7 @@ async def scheduled_report(userId: int, request: ReportRequest):
             spendType=consumption_type
         )
 
-        print("리포트 생성 완료")
+        logger.info("리포트 생성 완료")
     finally:
         db.close()
 
@@ -81,7 +83,7 @@ async def generate_monthly_report():
         )
 
         for user_id in user_id_list:
-            print(f"월간 리포트 생성 중: userId={user_id}")
+            logger.info(f"월간 리포트 생성 중: userId={user_id}")
             await scheduled_report(user_id, request)
     finally:
         db.close()
@@ -101,7 +103,7 @@ async def generate_weekly_report():
         )
 
         for user_id in user_id_list:
-            print(f"주간 리포트 생성 중: userId={user_id}")
+            logger.info(f"주간 리포트 생성 중: userId={user_id}")
             await scheduled_report(user_id, request)
     finally:
         db.close()
