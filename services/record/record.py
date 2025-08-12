@@ -21,6 +21,9 @@ def readbydate_records(db: Session, user_id: int, start_date: date, end_date: da
         .all()
     )
 
+def read_records(db: Session, user_id: int, spend_id: int): 
+    return db.query(Record).filter_by(userId=user_id, spendId=spend_id).first()
+
 def edit_records(db: Session, spend_id: int, edited_data: RecordsEdit) -> Record | None | str:
     target_record = db.query(Record).filter(Record.spendId == spend_id).first()
     if not target_record: return None
