@@ -13,7 +13,6 @@ from utils.response import response_success
 
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
-# 챌린지 생성 라우터
 @router.post("/create", status_code=201)
 def create_challenge(
     challenge_data: ChallengeCreate,
@@ -27,7 +26,6 @@ def create_challenge(
         status_code=201
     )
 
-# 챌린지 참여 라우터
 @router.post("/join", status_code=200)
 def join_challenge(
     join_data: ChallengeJoin,
@@ -40,7 +38,6 @@ def join_challenge(
         message = "챌린지 참여 완료"
     )
 
-# 챌린지 검색 라우터
 @router.get("/search", response_model=List[ChallengeListRead])
 def search_challenge(
     name: str,
@@ -55,7 +52,6 @@ def search_challenge(
         )
     return response_success(data=result, message="검색 결과 반환 완료")
 
-# 현재 참여중인 챌린지 아이디 조회 라우터
 @router.get("/current", response_model=ChallengeIdRead)
 def read_current_challenge(
     db: Session = Depends(get_db),
@@ -67,7 +63,6 @@ def read_current_challenge(
         message = "참여중인 챌린지 조회 완료"
     )
 
-# 챌린지 목록 조회 라우터
 @router.get("", response_model=List[ChallengeListRead])
 def read_challenges_list(
     db: Session = Depends(get_db)
@@ -78,7 +73,6 @@ def read_challenges_list(
         message = "챌린지 목록 조회 완료"
     )
 
-# 챌린지 단건 조회 라우터
 @router.get("/{challengeId}", response_model=ChallengeRead)
 def read_challenge(
     challengeId: int,
@@ -90,7 +84,6 @@ def read_challenge(
         message = "챌린지 단건 조회 완료"
     )
 
-# 챌린지 상세 정보 조회 라우터
 @router.get("/detail/{challengeId}", response_model=ChallengeDetailRead)
 def read_challenge_detail(
     challengeId: int,
