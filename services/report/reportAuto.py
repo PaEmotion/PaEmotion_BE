@@ -1,4 +1,3 @@
-from db.session import SessionLocal
 from schemas.reportGPT import ReportRequest
 from services.report.data import get_gpt_data, format_report_data
 from services.report.reportGPT import generate_report
@@ -7,11 +6,13 @@ from services.ml.type import classify_type
 from services.ml.budget import training_and_prediction
 from datetime import datetime, timedelta
 from models.record import Record
+from db.session import get_db
+
 import logging
 logger = logging.getLogger(__name__)
 
 async def scheduled_report(userId: int, request: ReportRequest):
-    db = SessionLocal()
+    db = db = next(get_db()) 
     try:
         gpt_data = await get_gpt_data(userId, request, db)
 
@@ -71,7 +72,7 @@ async def scheduled_report(userId: int, request: ReportRequest):
         db.close()
 
 async def generate_monthly_report():
-    db = SessionLocal()
+    db = next(get_db())
     try:
         today = datetime.today()
         user_ids = db.query(Record.userId).distinct().all()
@@ -89,7 +90,7 @@ async def generate_monthly_report():
         db.close()
 
 async def generate_weekly_report():
-    db = SessionLocal()
+    db = next(get_db())
     try:
         user_ids = db.query(Record.userId).distinct().all()
         user_id_list = [user_id for (user_id,) in user_ids]

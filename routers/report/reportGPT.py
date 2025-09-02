@@ -9,6 +9,8 @@ from services.ml.type import classify_type
 from services.ml.budget import training_and_prediction
 from utils.response import response_success, response_error
 import numpy as np
+from services.scheduler.fcm import send_fcm
+from auth.dependencies import redis_client
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -27,12 +29,13 @@ async def create_report(
     consumption_type = None
 
     # 2. records -> 문자열 데이터로 포맷하기
-    if not gpt_data:
-        return response_error(message="해당 기간에 소비 기록이 없습니다.", status_code=404)
-
-    if gpt_data['total_spend'] <= 0 or sum(gpt_data['emotion_count'].values()) == 0:
-        return response_error(message="소비 기록이 부족하여 리포트를 생성할 수 없습니다.", status_code=400)
-
+    if not gpt_data or gpt_data['total_spend'] <= 0 or sum(gpt_data['emotion_count'].values()) == 0:
+        
+        fcm_token = redis_client.get(f"user:{userId}:fcm")
+        if fcm_token:
+            send_fcm(fcm_token, "소비를 기록해보세요!", "이번 주 소비를 기록해보세요!")
+        return response_success(data={}, message="소비 기록이 부족하여 리포트 대신 알림만 발송")
+    
     if request.period == "monthly":
         data_str = format_report_data(
             gpt_data['total_spend'],
@@ -85,5 +88,7 @@ async def create_report(
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+    send_fcm(fcm_token, "리포트 생성완료", f"{request.period} 리포트가 생성되었습니다.")
 
     return response_success(data={"report": report}, message="리포트 생성 성공")
