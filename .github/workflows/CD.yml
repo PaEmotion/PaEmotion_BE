@@ -29,7 +29,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           source: "."
-          target: "/home/ubuntu/paemotion/backend"
+          target: "/home/ubuntu/paemotion"
 
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@master
