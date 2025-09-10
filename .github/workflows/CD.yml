@@ -28,7 +28,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          source: "."
+          source: "PAEMOTION/*"
           target: "/home/ubuntu/paemotion/backend"
 
       - name: Deploy with Docker Compose
